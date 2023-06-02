@@ -1,0 +1,11 @@
+/.env
+/cover.out
+/internal/v0/app/.env
+.env
+.env*
+
+/.idea/
+/bin/.env
+/log.txt
+
+.vscode
