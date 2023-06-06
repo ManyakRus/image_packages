@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/ManyakRus/image_packages/internal/v0/app/config"
-	"github.com/ManyakRus/image_packages/internal/v0/app/packages"
+	"github.com/ManyakRus/image_packages/internal/config"
+	"github.com/ManyakRus/image_packages/internal/packages"
 	ConfigMain "github.com/ManyakRus/starter/config"
 )
 
