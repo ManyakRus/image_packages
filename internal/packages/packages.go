@@ -8,7 +8,7 @@ import (
 )
 
 type FoldersPackages struct {
-	*folders.Folder
+	Folder         *folders.Folder
 	PackageName    string
 	PackageImports []string
 }
@@ -27,17 +27,41 @@ func FindAllPackages_FromDir(dir string) {
 
 	//err = filepath.Walk(dir, FindImports_FromPackage)
 
-	FolderAll := folders.FindFoldersTree(dir, true, false, false, "vendor")
+	FolderRoot := folders.FindFoldersTree(dir, true, false, false, "vendor")
 
-	RepositoryName := ""
+	FoldersPackage := FoldersPackages{}
+	FillFoldersPackages(&FoldersPackage, FolderRoot, cfg)
 
-	for _, dir1 := range FolderAll {
-		cfg.Dir = dir1
+}
+
+func FindRepositoryName(FolderRoot *folders.Folder, cfg *packages.Config) string {
+	var Otvet string
+
+	dir := FolderRoot.Name
+	cfg.Dir = dir
+	MassPackages, _ := packages.Load(cfg)
+	for _, v := range MassPackages {
+		Otvet = v.ID
+		break
+	}
+
+	return Otvet
+}
+
+// изменяет FoldersPackage
+func FillFoldersPackages(FoldersPackage *FoldersPackages, FolderRoot *folders.Folder, cfg *packages.Config) {
+	RepositoryName := FindRepositoryName(FolderRoot, cfg)
+
+	for _, folder1 := range FolderRoot.Folders {
+		FoldersPackage1 := &FoldersPackages{}
+		FoldersPackage1.Folder = folder1
+
+		cfg.Dir = folder1.Name
 		MassPackages, _ := packages.Load(cfg)
 		for _, v := range MassPackages {
-			if RepositoryName == "" {
-				RepositoryName = v.ID
-			}
+			FoldersPackage1.PackageName = v.ID
+			PackageImports := make([]string, 0)
+
 			RepositoryLen := len(RepositoryName)
 			for _, import1 := range v.Imports {
 				ImportID := import1.ID
@@ -47,8 +71,12 @@ func FindAllPackages_FromDir(dir string) {
 				if ImportID[0:RepositoryLen] != RepositoryName {
 					continue
 				}
-				log.Print(import1)
+				log.Print("add package: ", import1.ID)
+				PackageImports = append(PackageImports, import1.ID)
 			}
+			FoldersPackage1.PackageImports = PackageImports
 		}
+		*FoldersPackage = append(*FoldersPackage, FoldersPackage1)
 	}
+
 }
