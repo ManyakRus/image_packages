@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="xgml">
+	<section name="graph">
+		<attribute key="hierarchic" type="int">1</attribute>
+		<section name="node">
+			<attribute key="id" type="int">1</attribute>
+			<attribute key="label" type="string">Entity1</attribute>
+			<section name="graphics">
+				<attribute key="type" type="string">rectangle</attribute>
+				<attribute key="fill" type="string">#FFFFFF</attribute>
+				<attribute key="outline" type="string">#000000</attribute>
+				<attribute key="h" type="double">12</attribute>
+				<attribute key="w" type="double">60</attribute>
+			</section>
+			<section name="LabelGraphics">
+				<attribute key="text" type="String">Entity1</attribute>
+				<attribute key="fontSize" type="int">12</attribute>
+			</section>
+		</section>
+		<section name="node">
+			<attribute key="id" type="int">2</attribute>
+			<attribute key="label" type="string">Entity2</attribute>
+			<section name="graphics">
+				<attribute key="type" type="string">rectangle</attribute>
+				<attribute key="fill" type="string">#FFFFFF</attribute>
+				<attribute key="outline" type="string">#000000</attribute>
+				<attribute key="h" type="double">12</attribute>
+				<attribute key="w" type="double">60</attribute>
+			</section>
+			<section name="LabelGraphics">
+				<attribute key="text" type="String">Entity2</attribute>
+				<attribute key="fontSize" type="int">12</attribute>
+			</section>
+		</section>
+		<section name="edge">
+			<attribute key="source" type="int">1</attribute>
+			<attribute key="target" type="int">2</attribute>
+			<section name="graphics">
+				<attribute key="fill" type="string">#000000</attribute>
+				<attribute key="targetArrow" type="string">standard</attribute>
+			</section>
+		</section>
+	</section>
+</section>
