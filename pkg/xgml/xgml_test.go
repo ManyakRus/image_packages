@@ -1,4 +1,4 @@
-package yed
+package xgml
 
 import (
 	"github.com/ManyakRus/starter/micro"
@@ -7,10 +7,13 @@ import (
 
 func TestCreateNewXGML(t *testing.T) {
 	dir := micro.ProgramDir()
-	DocXML := CreateNewXGML("")
+	DocXML := CreateDocXGML("")
 	ElementGraph := DocXML.FindElement("/section/section")
-	Element1 := CreateElementXGML_Standart(ElementGraph, "", "Entity1", "")
-	Element2 := CreateElementXGML_Standart(ElementGraph, "", "Entity2", "")
+
+	Group1 := CreateGroupXGML(ElementGraph, "GroupCaption1")
+
+	Element1 := CreateElementXGML_Standart(ElementGraph, Group1, "Entity1", "")
+	Element2 := CreateElementXGML_Standart(ElementGraph, nil, "Entity2", "")
 	CreateLinkXGML(ElementGraph, Element1.Index(), Element2.Index())
 
 	FileName := dir + "test" + micro.SeparatorFile() + "test.xgml"
