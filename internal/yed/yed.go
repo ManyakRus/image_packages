@@ -2,6 +2,7 @@ package yed
 
 import (
 	"strings"
+	_ "github.com/beevik/etree"
 )
 
 func AddDirectory(buffer *strings.Builder, Name string) {
