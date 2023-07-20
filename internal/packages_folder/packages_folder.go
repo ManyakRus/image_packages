@@ -1,4 +1,4 @@
-package packages
+package packages_folder
 
 import (
 	"github.com/ManyakRus/starter/contextmain"
@@ -19,17 +19,22 @@ type FoldersPackages struct {
 	PackageImports []string
 }
 
-func FindAllFolders_FromDir(dir string) *folders.Folder {
+func CreateConfigPackages(dir string) *packages.Config {
 	var err error
 	ctxMain := contextmain.GetContext()
 	cfg := &packages.Config{}
 	cfg.Context = ctxMain
 	cfg.Dir = dir
-	cfg.Mode = packages.NeedImports
+	cfg.Mode = packages.NeedImports + packages.NeedName
 	cfg.Tests = false
 	if err != nil {
 		log.Panic("FindAllFolders_FromDir() error: ", err)
 	}
+
+	return cfg
+}
+
+func FindAllFolders_FromDir(dir string) *folders.Folder {
 
 	FolderRoot := folders.FindFoldersTree(dir, true, false, false, "vendor")
 
@@ -39,15 +44,19 @@ func FindAllFolders_FromDir(dir string) *folders.Folder {
 	return FolderRoot
 }
 
-func FindRepositoryName(FolderRoot *folders.Folder, cfg *packages.Config) string {
+func FindRepositoryName(FolderRoot *folders.Folder) string {
 	var Otvet string
 
-	dir := FolderRoot.Name
-	cfg.Dir = dir
-	MassPackages, _ := packages.Load(cfg)
+	ConfigPackages := CreateConfigPackages(FolderRoot.FileName)
+
+	MassPackages, _ := packages.Load(ConfigPackages)
 	for _, v := range MassPackages {
-		Otvet = v.ID
+		Otvet = v.Name
 		break
+	}
+
+	if Otvet == "." {
+		Otvet = ""
 	}
 
 	return Otvet
@@ -88,15 +97,15 @@ func FindRepositoryName(FolderRoot *folders.Folder, cfg *packages.Config) string
 //	return FoldersPackage
 //}
 
-func FindPackageFromFolder(FolderRoot *folders.Folder, cfg *packages.Config) Package {
+func FindPackageFromFolder(FolderRoot *folders.Folder) Package {
 	Otvet := Package{}
-	RepositoryName := FindRepositoryName(FolderRoot, cfg)
+	RepositoryName := FindRepositoryName(FolderRoot)
 	Otvet.Name = RepositoryName
 
 	PackageImports := make([]string, 0)
 
-	cfg.Dir = FolderRoot.Name
-	MassPackages, _ := packages.Load(cfg)
+	ConfigPackages := CreateConfigPackages(FolderRoot.FileName)
+	MassPackages, _ := packages.Load(ConfigPackages)
 	for _, v := range MassPackages {
 
 		RepositoryLen := len(RepositoryName)

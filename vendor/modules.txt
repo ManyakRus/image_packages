@@ -1,8 +1,8 @@
 # github.com/ManyakRus/logrus v0.0.0-20230426064230-515895169d22
 ## explicit; go 1.13
 github.com/ManyakRus/logrus
-# github.com/ManyakRus/starter v0.0.0-20230606150530-71fc53b2f839
-## explicit; go 1.18
+# github.com/ManyakRus/starter v0.0.0-20230720125411-d86504a07013
+## explicit; go 1.20
 github.com/ManyakRus/starter/config
 github.com/ManyakRus/starter/contextmain
 github.com/ManyakRus/starter/folders
@@ -15,6 +15,8 @@ github.com/beevik/etree
 # github.com/joho/godotenv v1.5.1
 ## explicit; go 1.12
 github.com/joho/godotenv
+# github.com/sirupsen/logrus v1.9.3
+## explicit; go 1.13
 # golang.org/x/mod v0.12.0
 ## explicit; go 1.17
 golang.org/x/mod/semver
