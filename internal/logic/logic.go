@@ -11,6 +11,9 @@ import (
 	"sort"
 )
 
+// MapPackagesElements - содержит индекс элемента xgml для каждого пакета
+var MapPackagesElements = make(map[*packages_folder.PackageFolder]*etree.Element, 0)
+
 func StartFillAll(FileName string) {
 	FolderRoot := packages_folder.FindAllFolders_FromDir(config.Settings.DIRECTORY_SOURCE)
 
@@ -21,7 +24,11 @@ func StartFillAll(FileName string) {
 	DocXML := xgml.CreateDocXGML("")
 	ElementGraph := DocXML.FindElement("/section/section")
 
+	//заполним каталоги и пакеты
 	FillFolder(ElementGraph, nil, FolderRoot)
+
+	//заполним связи
+	//FillLinks(ElementGraph)
 
 	DocXML.IndentTabs()
 	err := DocXML.WriteToFile(FileName)
@@ -31,30 +38,46 @@ func StartFillAll(FileName string) {
 
 }
 
+// FillLinks - заполняет связи (стрелки) между пакетами
+func FillLinks(ElementGraph *etree.Element) {
+	for PackageFrom, ElementFrom := range MapPackagesElements {
+		for _, PackageImport := range PackageFrom.Imports {
+			ElementImport, ok := MapPackagesElements[PackageImport]
+			if ok == false {
+				log.Panic("MapPackagesElements[PackageImport] error: ok =false")
+			}
+		}
+	}
+}
+
 func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folder) {
-	//добавим группа (каталог)
 	FolderName := Folder.Name
 
-	//добавим пакет(package)
 	//ConfigPackages := packages_folder.CreateConfigPackages(Folder.FileName)
-	PackageNameFull := packages_folder.FindRepositoryName(Folder)
-	PackageName := FindFileNameShort(PackageNameFull)
+	Package1 := packages_folder.FindPackageFromFolder(Folder)
+	PackageName := Package1.Name
+	//PackageNameFull := Package1.
+	//PackageName := FindFileNameShort(PackageNameFull)
 	if PackageName == "" && len(Folder.Folders) == 0 {
 		return
 	}
 
+	//добавим группа (каталог)
 	ElementGroup = xgml.CreateGroupXGML(ElementGraph, ElementGroup, FolderName)
 	if PackageName != "" {
-		xgml.CreateElementXGML_Shape(ElementGraph, ElementGroup, PackageName)
+		//добавим пакет(package)
+		ElementShape := xgml.CreateElementXGML_Shape(ElementGraph, ElementGroup, PackageName)
+		MapPackagesElements[&Package1] = ElementShape
 	}
 
-	//
+	//сортировка
 	MassKeys := make([]string, 0, len(Folder.Folders))
 	for k := range Folder.Folders {
 		MassKeys = append(MassKeys, k)
 	}
 	sort.Strings(MassKeys)
 
+	//обход всех папок
 	for _, key1 := range MassKeys {
 		Folder1, ok := Folder.Folders[key1]
 		if ok == false {

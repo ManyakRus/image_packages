@@ -7,9 +7,12 @@ import (
 	"golang.org/x/tools/go/packages"
 )
 
-type Package struct {
-	Name    string
-	Imports []string
+type PackageFolder struct {
+	Package  *packages.Package
+	PkgPath  string
+	Name     string
+	FileName string
+	Imports  []*packages.Package
 }
 
 type FoldersPackages struct {
@@ -25,7 +28,7 @@ func CreateConfigPackages(dir string) *packages.Config {
 	cfg := &packages.Config{}
 	cfg.Context = ctxMain
 	cfg.Dir = dir
-	cfg.Mode = packages.NeedImports + packages.NeedName
+	cfg.Mode = packages.NeedImports + packages.NeedName + packages.NeedExportFile
 	cfg.Tests = false
 	if err != nil {
 		log.Panic("FindAllFolders_FromDir() error: ", err)
@@ -74,20 +77,20 @@ func FindRepositoryName(FolderRoot *folders.Folder) string {
 //		cfg.Dir = folder1.Name
 //		MassPackages, _ := packages.Load(cfg)
 //		for _, v := range MassPackages {
-//			FoldersPackage1.PackageName = v.ID
+//			FoldersPackage1.PackageName = v.PkgPath
 //			PackageImports := make([]string, 0)
 //
 //			RepositoryLen := len(RepositoryName)
 //			for _, import1 := range v.Imports {
-//				ImportID := import1.ID
+//				ImportID := import1.PkgPath
 //				if len(ImportID) < RepositoryLen {
 //					continue
 //				}
 //				if ImportID[0:RepositoryLen] != RepositoryName {
 //					continue
 //				}
-//				log.Print("add package: ", import1.ID)
-//				PackageImports = append(PackageImports, import1.ID)
+//				log.Print("add package: ", import1.PkgPath)
+//				PackageImports = append(PackageImports, import1.PkgPath)
 //			}
 //			FoldersPackage1.PackageImports = PackageImports
 //		}
@@ -97,32 +100,38 @@ func FindRepositoryName(FolderRoot *folders.Folder) string {
 //	return FoldersPackage
 //}
 
-func FindPackageFromFolder(FolderRoot *folders.Folder) Package {
-	Otvet := Package{}
+func FindPackageFromFolder(FolderRoot *folders.Folder) PackageFolder {
+	Otvet := PackageFolder{}
 	RepositoryName := FindRepositoryName(FolderRoot)
 	Otvet.Name = RepositoryName
+	Otvet.FileName = FolderRoot.FileName
 
-	PackageImports := make([]string, 0)
+	//PackageImports := make([]*folders.Folder, 0)
 
 	ConfigPackages := CreateConfigPackages(FolderRoot.FileName)
 	MassPackages, _ := packages.Load(ConfigPackages)
+	//for _, v := range MassPackages {
+	//	Otvet.PkgPath = v.PkgPath
+	//	RepositoryLen := len(RepositoryName)
+	//	for _, import1 := range v.Imports {
+	//		ImportID := import1.ID
+	//		if len(ImportID) < RepositoryLen {
+	//			continue
+	//		}
+	//		if ImportID[0:RepositoryLen] != RepositoryName {
+	//			continue
+	//		}
+	//		//log.Print("add package: ", import1.PkgPath)
+	//		//PackageFolder1 := PackageFolder{}
+	//		PackageImports = append(PackageImports, import1)
+	//	}
+	//}
+
 	for _, v := range MassPackages {
-
-		RepositoryLen := len(RepositoryName)
-		for _, import1 := range v.Imports {
-			ImportID := import1.ID
-			if len(ImportID) < RepositoryLen {
-				continue
-			}
-			if ImportID[0:RepositoryLen] != RepositoryName {
-				continue
-			}
-			//log.Print("add package: ", import1.ID)
-			PackageImports = append(PackageImports, import1.ID)
-		}
+		Otvet.Package = v
+		break
 	}
-
-	Otvet.Imports = PackageImports
+	Otvet.Imports = MassPackages
 
 	return Otvet
 }
