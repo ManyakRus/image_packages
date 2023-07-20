@@ -16,6 +16,7 @@ func CreateDocXGML(ShowKind string) *etree.Document {
 
 	DocXML := etree.NewDocument()
 	DocXML.CreateProcInst("xml", `version="1.0" encoding="UTF-8"`)
+	//DocXML.IndentTabs()
 
 	ElementXGML := DocXML.CreateElement("section")
 	ElementXGML.CreateAttr("name", "xgml")
@@ -29,7 +30,7 @@ func CreateDocXGML(ShowKind string) *etree.Document {
 	return DocXML
 }
 
-func CreateElementXGML_UML(Element *etree.Element, ElementGroup *etree.Element, ElementId, ElementName string) *etree.Element {
+func CreateElementXGML_UML(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementId, ElementName string) *etree.Element {
 
 	if ElementId == "" {
 		ElementId = ElementName
@@ -40,7 +41,7 @@ func CreateElementXGML_UML(Element *etree.Element, ElementGroup *etree.Element, 
 
 	//node
 
-	ElementNode := addSectionXML(Element, "node")
+	ElementNode := addSectionXML(ElementGraph, "node")
 	addAttributeXML(ElementNode, "id", "string", ElementId)
 	addAttributeXML(ElementNode, "label", "string", "")
 
@@ -67,15 +68,15 @@ func CreateElementXGML_UML(Element *etree.Element, ElementGroup *etree.Element, 
 	addAttributeXML(ElementStyleProperties, "valueClass", "string", "java.lang.Boolean")
 	addAttributeXML(ElementStyleProperties, "value", "string", "true")
 
-	//Element.ЗаписатьКонецЭлемента() //property
+	//ElementGraph.ЗаписатьКонецЭлемента() //property
 
 	//
 
-	//Element.ЗаписатьКонецЭлемента() //styleproperties
+	//ElementGraph.ЗаписатьКонецЭлемента() //styleproperties
 
 	//
 
-	//Element.ЗаписатьКонецЭлемента() //graphics
+	//ElementGraph.ЗаписатьКонецЭлемента() //graphics
 
 	//LabelGraphics-1
 
@@ -87,7 +88,7 @@ func CreateElementXGML_UML(Element *etree.Element, ElementGroup *etree.Element, 
 	addAttributeXML(ElementLabelGraphics, "contentWidth", "int", "24")
 	addAttributeXML(ElementLabelGraphics, "contentHeight", "int", "18")
 
-	//Element.ЗаписатьКонецЭлемента()
+	//ElementGraph.ЗаписатьКонецЭлемента()
 
 	//LabelGraphics-2
 
@@ -99,24 +100,24 @@ func CreateElementXGML_UML(Element *etree.Element, ElementGroup *etree.Element, 
 	addAttributeXML(ElementLabelGraphics2, "contentWidth", "int", "24")
 	addAttributeXML(ElementLabelGraphics2, "contentHeight", "int", "18")
 
-	//Element.ЗаписатьКонецЭлемента()
+	//ElementGraph.ЗаписатьКонецЭлемента()
 
 	//gid
 
 	if (ElementGroup) != nil {
-		addAttributeXML_int(Element, "gid", ElementGroup.Index())
+		addAttributeXML_int(ElementGraph, "gid", ElementGroup.Index())
 	}
 
 	//
 
-	//Element.ЗаписатьКонецЭлемента() //node
+	//ElementGraph.ЗаписатьКонецЭлемента() //node
 
 	return ElementNode
 }
 
-func CreateElementXGML_Standart(Element *etree.Element, ElementGroup *etree.Element, ElementName, ShowKind string) *etree.Element {
+func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
 
-	ElementNode := addSectionXML(Element, "node")
+	ElementNode := addSectionXML(ElementGraph, "node")
 	addAttributeXML(ElementNode, "id", "int", strconv.Itoa(ElementNode.Index()))
 	addAttributeXML(ElementNode, "label", "string", ElementName)
 
@@ -127,19 +128,19 @@ func CreateElementXGML_Standart(Element *etree.Element, ElementGroup *etree.Elem
 	Width := findWidthBlock(ElementName)
 	Height := findHeightBlock(ElementName)
 
-	if ShowKind == "Группами" {
+	//if ShowKind == "Группами" {
+	//
+	//	Width = int(math.Round(float64(Width) * 1.3))
+	//
+	//	//Высота = Окр(Высота*1.3, 0)
+	//
+	//	addAttributeXML(ElementGraphics, "outline", "string", "#FFFFFF")
+	//
+	//} else {
 
-		Width = int(math.Round(float64(Width) * 1.3))
+	addAttributeXML(ElementGraphics, "outline", "string", "#000000")
 
-		//Высота = Окр(Высота*1.3, 0)
-
-		addAttributeXML(ElementGraphics, "outline", "string", "#FFFFFF")
-
-	} else {
-
-		addAttributeXML(ElementGraphics, "outline", "string", "#000000")
-
-	}
+	//}
 
 	addAttributeXML(ElementGraphics, "h", "double", strconv.Itoa(Height))
 	addAttributeXML(ElementGraphics, "w", "double", strconv.Itoa(Width))
@@ -152,7 +153,7 @@ func CreateElementXGML_Standart(Element *etree.Element, ElementGroup *etree.Elem
 		addAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
 	}
 
-	//Element.ЗаписатьКонецЭлемента() //node
+	//ElementGraph.ЗаписатьКонецЭлемента() //node
 
 	return ElementNode
 } // ВидОтображения = "Группами"
@@ -163,7 +164,7 @@ func CreateElementXGML_Standart(Element *etree.Element, ElementGroup *etree.Elem
 //	//	ElementId = ElementName
 //	//}
 //
-//	CreateElementXGML_Standart(Element, ElementGroup, ElementName, ВидОтображения)
+//	CreateElementXGML_Shape(Element, ElementGroup, ElementName, ВидОтображения)
 //	//CreateGroupXGML(Element, ElementName, ElementGroup)
 //
 //}
@@ -178,15 +179,15 @@ func CreateElementXGML_Standart(Element *etree.Element, ElementGroup *etree.Elem
 //
 //		Текст := strconv.Itoa(ElementId) + "\n" + ElementName
 //
-//		CreateElementXGML_Standart(Element, ElementGroup, Текст, ShowKind)
+//		CreateElementXGML_Shape(Element, ElementGroup, Текст, ShowKind)
 //
 //	}
 //
 //}
 
-func CreateGroupXGML(Element *etree.Element, GroupCaption string) *etree.Element {
+func CreateGroupXGML(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
 
-	ElementNode := addSectionXML(Element, "node")
+	ElementNode := addSectionXML(ElementGraph, "node")
 	addAttributeXML_int(ElementNode, "id", ElementNode.Index())
 	addAttributeXML(ElementNode, "label", "string", GroupCaption)
 	addAttributeXML(ElementNode, "isGroup", "boolean", "true")
@@ -205,17 +206,18 @@ func CreateGroupXGML(Element *etree.Element, GroupCaption string) *etree.Element
 	addAttributeXML(ElementLabelGraphics, "text", "String", GroupCaption)
 	addAttributeXML(ElementLabelGraphics, "fill", "String", "#EBEBEB")
 	addAttributeXML(ElementLabelGraphics, "fontSize", "int", "16")
-	addAttributeXML(ElementLabelGraphics, "anchor", "String", "t")
+	addAttributeXML(ElementLabelGraphics, "anchor", "String", "n")
 	//addAttributeXML_string(ElementLabelGraphics, "autoSizePolicy", "node_width")
 	addAttributeXML_double(ElementLabelGraphics, "borderDistance", 0)
 	addAttributeXML_double(ElementLabelGraphics, "leftBorderInset", 50)
 	addAttributeXML_double(ElementLabelGraphics, "rightBorderInset", 50)
+	addAttributeXML_string(ElementLabelGraphics, "model", "sandwich")
 
-	//if GroupId != "" {
-	//	addAttributeXML(Element, "gid", "String", GroupId)
-	//}
+	if ElementGroup != nil {
+		addAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
+	}
 
-	//Element.ЗаписатьКонецЭлемента() //node
+	//ElementGraph.ЗаписатьКонецЭлемента() //node
 
 	return ElementNode
 } // CreateGroupXGML()

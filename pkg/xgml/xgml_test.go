@@ -10,14 +10,14 @@ func TestCreateNewXGML(t *testing.T) {
 	DocXML := CreateDocXGML("")
 	ElementGraph := DocXML.FindElement("/section/section")
 
-	Group1 := CreateGroupXGML(ElementGraph, "GroupCaption1")
+	Group1 := CreateGroupXGML(ElementGraph, nil, "GroupCaption1")
 
-	Element1 := CreateElementXGML_Standart(ElementGraph, Group1, "Entity1", "")
-	Element2 := CreateElementXGML_Standart(ElementGraph, nil, "Entity2", "")
+	Element1 := CreateElementXGML_Shape(ElementGraph, Group1, "Entity1")
+	Element2 := CreateElementXGML_Shape(ElementGraph, nil, "Entity2")
 	CreateLinkXGML(ElementGraph, Element1.Index(), Element2.Index())
 
 	FileName := dir + "test" + micro.SeparatorFile() + "test.xgml"
-	DocXML.IndentTabs()
+	//DocXML.IndentTabs()
 	err := DocXML.WriteToFile(FileName)
 	if err != nil {
 		t.Error("TestCreateNewXGML() error: ", err)
