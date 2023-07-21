@@ -35,6 +35,9 @@ You can also select a different Layout type to change the display.
 Select from the menu:
 File-Export
 
+![packages](https://github.com/ManyakRus/image_packages/assets/30662875/e56ca425-7fe3-4128-b4d5-2341106ffd6e)
+
+
 
 Source code in Golang language.
 Tested on Linux Ubuntu
