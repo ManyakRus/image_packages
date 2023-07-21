@@ -1,13 +1,16 @@
 package xgml
 
 import (
-	"github.com/ManyakRus/starter/log"
 	"github.com/beevik/etree"
 	_ "github.com/beevik/etree"
 	"math"
 	"strconv"
 	"strings"
 )
+
+var FONT_SIZE_SHAPE = 16
+
+var FONT_SIZE_GROUP = 10
 
 //var doc = etree.NewDocument()
 
@@ -25,10 +28,91 @@ func CreateDocXGML(ShowKind string) *etree.Document {
 	ElementGraph := addSectionXML(ElementXGML, "graph")
 	addAttributeXML(ElementGraph, "hierarchic", "int", "1")
 
-	log.Info("ElementGraph.GetPath(): ", ElementGraph.GetPath())
+	//log.Info("ElementGraph.GetPath(): ", ElementGraph.GetPath())
 
 	return DocXML
 }
+
+func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
+
+	ElementNode := addSectionXML(ElementGraph, "node")
+	addAttributeXML(ElementNode, "id", "int", strconv.Itoa(ElementNode.Index()))
+	addAttributeXML(ElementNode, "label", "string", ElementName)
+
+	ElementGraphics := addSectionXML(ElementNode, "graphics")
+	addAttributeXML(ElementGraphics, "type", "string", "rectangle")
+	addAttributeXML(ElementGraphics, "fill", "string", "#FFFFFF") //было #FFCC00
+
+	Width := findWidthShape(ElementName)
+	Height := findHeightShape(ElementName)
+
+	//if ShowKind == "Группами" {
+	//
+	//	Width = int(math.Round(float64(Width) * 1.3))
+	//
+	//	//Высота = Окр(Высота*1.3, 0)
+	//
+	//	addAttributeXML(ElementGraphics, "outline", "string", "#FFFFFF")
+	//
+	//} else {
+
+	addAttributeXML(ElementGraphics, "outline", "string", "#000000")
+
+	//}
+
+	addAttributeXML(ElementGraphics, "h", "double", strconv.Itoa(Height))
+	addAttributeXML(ElementGraphics, "w", "double", strconv.Itoa(Width))
+
+	ElementLabelGraphics := addSectionXML(ElementNode, "LabelGraphics")
+	addAttributeXML(ElementLabelGraphics, "text", "String", ElementName)
+	addAttributeXML(ElementLabelGraphics, "fontSize", "int", strconv.Itoa(FONT_SIZE_SHAPE))
+
+	if ElementGroup != nil {
+		addAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
+	}
+
+	//ElementGraph.ЗаписатьКонецЭлемента() //node
+
+	return ElementNode
+} // ВидОтображения = "Группами"
+
+func CreateGroupXGML(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
+
+	ElementNode := addSectionXML(ElementGraph, "node")
+	addAttributeXML_int(ElementNode, "id", ElementNode.Index())
+	addAttributeXML(ElementNode, "label", "string", GroupCaption)
+	addAttributeXML(ElementNode, "isGroup", "boolean", "true")
+
+	Width := findWidthGroup(GroupCaption)
+	Height := findHeightGroup(GroupCaption)
+
+	ElementGraphics := addSectionXML(ElementNode, "graphics")
+	addAttributeXML(ElementGraphics, "type", "string", "roundrectangle")
+	addAttributeXML(ElementGraphics, "fill", "string", "#F5F5F5")
+	addAttributeXML(ElementGraphics, "outline", "string", "#F5F5F5")
+	//addAttributeXML(ElementGraphics, "outline", "string", "#000000")
+	addAttributeXML_double(ElementGraphics, "h", float64(Height))
+	addAttributeXML_double(ElementGraphics, "w", float64(Width))
+
+	ElementLabelGraphics := addSectionXML(ElementNode, "LabelGraphics")
+	addAttributeXML(ElementLabelGraphics, "text", "String", GroupCaption)
+	addAttributeXML(ElementLabelGraphics, "fill", "String", "#EBEBEB")
+	addAttributeXML(ElementLabelGraphics, "fontSize", "int", strconv.Itoa(FONT_SIZE_GROUP))
+	addAttributeXML(ElementLabelGraphics, "anchor", "String", "n")
+	//addAttributeXML_string(ElementLabelGraphics, "autoSizePolicy", "node_width")
+	addAttributeXML_double(ElementLabelGraphics, "borderDistance", 0)
+	addAttributeXML_double(ElementLabelGraphics, "leftBorderInset", 50)
+	addAttributeXML_double(ElementLabelGraphics, "rightBorderInset", 50)
+	addAttributeXML_string(ElementLabelGraphics, "model", "sandwich")
+
+	if ElementGroup != nil {
+		addAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
+	}
+
+	//ElementGraph.ЗаписатьКонецЭлемента() //node
+
+	return ElementNode
+} // CreateGroupXGML()
 
 func CreateElementXGML_UML(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementId, ElementName string) *etree.Element {
 
@@ -36,8 +120,8 @@ func CreateElementXGML_UML(ElementGraph *etree.Element, ElementGroup *etree.Elem
 		ElementId = ElementName
 	}
 
-	Width := findWidthBlock(ElementName)
-	Height := findHeightBlock(ElementName)
+	Width := findWidthShape(ElementName)
+	Height := findHeightShape(ElementName)
 
 	//node
 
@@ -115,49 +199,6 @@ func CreateElementXGML_UML(ElementGraph *etree.Element, ElementGroup *etree.Elem
 	return ElementNode
 }
 
-func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
-
-	ElementNode := addSectionXML(ElementGraph, "node")
-	addAttributeXML(ElementNode, "id", "int", strconv.Itoa(ElementNode.Index()))
-	addAttributeXML(ElementNode, "label", "string", ElementName)
-
-	ElementGraphics := addSectionXML(ElementNode, "graphics")
-	addAttributeXML(ElementGraphics, "type", "string", "rectangle")
-	addAttributeXML(ElementGraphics, "fill", "string", "#FFFFFF") //было #FFCC00
-
-	Width := findWidthBlock(ElementName)
-	Height := findHeightBlock(ElementName)
-
-	//if ShowKind == "Группами" {
-	//
-	//	Width = int(math.Round(float64(Width) * 1.3))
-	//
-	//	//Высота = Окр(Высота*1.3, 0)
-	//
-	//	addAttributeXML(ElementGraphics, "outline", "string", "#FFFFFF")
-	//
-	//} else {
-
-	addAttributeXML(ElementGraphics, "outline", "string", "#000000")
-
-	//}
-
-	addAttributeXML(ElementGraphics, "h", "double", strconv.Itoa(Height))
-	addAttributeXML(ElementGraphics, "w", "double", strconv.Itoa(Width))
-
-	ElementLabelGraphics := addSectionXML(ElementNode, "LabelGraphics")
-	addAttributeXML(ElementLabelGraphics, "text", "String", ElementName)
-	addAttributeXML(ElementLabelGraphics, "fontSize", "int", "12")
-
-	if ElementGroup != nil {
-		addAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
-	}
-
-	//ElementGraph.ЗаписатьКонецЭлемента() //node
-
-	return ElementNode
-} // ВидОтображения = "Группами"
-
 //func CreateElementXGML_WithGroup(Element, ElementGroup *etree.Element, ElementName, ВидОтображения string) { // ВидОтображения = "Группами"
 //
 //	//if ElementId == "" {
@@ -185,43 +226,6 @@ func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.El
 //
 //}
 
-func CreateGroupXGML(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
-
-	ElementNode := addSectionXML(ElementGraph, "node")
-	addAttributeXML_int(ElementNode, "id", ElementNode.Index())
-	addAttributeXML(ElementNode, "label", "string", GroupCaption)
-	addAttributeXML(ElementNode, "isGroup", "boolean", "true")
-
-	Width := findWidthGroup(GroupCaption)
-	Height := findHeightGroup(GroupCaption)
-
-	ElementGraphics := addSectionXML(ElementNode, "graphics")
-	addAttributeXML(ElementGraphics, "type", "string", "roundrectangle")
-	addAttributeXML(ElementGraphics, "fill", "string", "#F5F5F5")
-	addAttributeXML(ElementGraphics, "outline", "string", "#000000")
-	addAttributeXML_double(ElementGraphics, "h", float64(Height))
-	addAttributeXML_double(ElementGraphics, "w", float64(Width))
-
-	ElementLabelGraphics := addSectionXML(ElementNode, "LabelGraphics")
-	addAttributeXML(ElementLabelGraphics, "text", "String", GroupCaption)
-	addAttributeXML(ElementLabelGraphics, "fill", "String", "#EBEBEB")
-	addAttributeXML(ElementLabelGraphics, "fontSize", "int", "16")
-	addAttributeXML(ElementLabelGraphics, "anchor", "String", "n")
-	//addAttributeXML_string(ElementLabelGraphics, "autoSizePolicy", "node_width")
-	addAttributeXML_double(ElementLabelGraphics, "borderDistance", 0)
-	addAttributeXML_double(ElementLabelGraphics, "leftBorderInset", 50)
-	addAttributeXML_double(ElementLabelGraphics, "rightBorderInset", 50)
-	addAttributeXML_string(ElementLabelGraphics, "model", "sandwich")
-
-	if ElementGroup != nil {
-		addAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
-	}
-
-	//ElementGraph.ЗаписатьКонецЭлемента() //node
-
-	return ElementNode
-} // CreateGroupXGML()
-
 func AddDirectory(buffer *strings.Builder, Name string) {
 
 }
@@ -243,25 +247,25 @@ func CreateLinkXGML(ElementGraph *etree.Element, IndexElementFrom, IndexElementT
 } // CreateLinkXGML()
 
 // возвращает число - ширину элемента
-func findWidthBlock(ElementName string) int {
-	Otvet := 10
+func findWidthShape(ElementName string) int {
+	Otvet := FONT_SIZE_SHAPE * 2
 
 	LenMax := findMaxLenRow(ElementName)
 	var OtvetF float64
-	OtvetF = float64(Otvet) + float64(LenMax)*7.1
+	OtvetF = float64(Otvet) + float64(LenMax)*float64(FONT_SIZE_SHAPE/2)
 	Otvet = int(math.Round(OtvetF))
 
 	return Otvet
 }
 
 // возвращает число - высоту элемента
-func findHeightBlock(ElementName string) int {
+func findHeightShape(ElementName string) int {
 
-	Otvet := 30
+	Otvet := 10 + FONT_SIZE_SHAPE*3
 
 	RowsTotal := countLines(ElementName)
 
-	Otvet = Otvet + (RowsTotal-1)*18
+	Otvet = Otvet + (RowsTotal-1)*FONT_SIZE_SHAPE*2
 
 	return Otvet
 

@@ -7,12 +7,15 @@ import (
 	"github.com/ManyakRus/starter/folders"
 	"github.com/ManyakRus/starter/log"
 	"github.com/beevik/etree"
+	"golang.org/x/tools/go/packages"
 	"path/filepath"
 	"sort"
 )
 
 // MapPackagesElements - содержит индекс элемента xgml для каждого пакета
-var MapPackagesElements = make(map[*packages_folder.PackageFolder]*etree.Element, 0)
+var MapPackagesElements = make(map[*packages.Package]*etree.Element, 0)
+
+var MapPackageIDElements = make(map[string]*etree.Element, 0)
 
 func StartFillAll(FileName string) {
 	FolderRoot := packages_folder.FindAllFolders_FromDir(config.Settings.DIRECTORY_SOURCE)
@@ -25,11 +28,14 @@ func StartFillAll(FileName string) {
 	ElementGraph := DocXML.FindElement("/section/section")
 
 	//заполним каталоги и пакеты
+	log.Info("Start fill groups")
 	FillFolder(ElementGraph, nil, FolderRoot)
 
 	//заполним связи
-	//FillLinks(ElementGraph)
+	log.Info("Start fill links")
+	FillLinks(ElementGraph)
 
+	log.Info("Start save file")
 	DocXML.IndentTabs()
 	err := DocXML.WriteToFile(FileName)
 	if err != nil {
@@ -42,10 +48,13 @@ func StartFillAll(FileName string) {
 func FillLinks(ElementGraph *etree.Element) {
 	for PackageFrom, ElementFrom := range MapPackagesElements {
 		for _, PackageImport := range PackageFrom.Imports {
-			ElementImport, ok := MapPackagesElements[PackageImport]
+			ElementImport, ok := MapPackageIDElements[PackageImport.ID]
 			if ok == false {
-				log.Panic("MapPackagesElements[PackageImport] error: ok =false")
+				//посторонние импорты
+				//log.Panic("MapPackagesElements[PackageImport] error: ok =false")
+				continue
 			}
+			xgml.CreateLinkXGML(ElementGraph, ElementFrom.Index(), ElementImport.Index())
 		}
 	}
 }
@@ -54,9 +63,9 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 	FolderName := Folder.Name
 
 	//ConfigPackages := packages_folder.CreateConfigPackages(Folder.FileName)
-	Package1 := packages_folder.FindPackageFromFolder(Folder)
-	PackageName := Package1.Name
-	//PackageNameFull := Package1.
+	PackageFolder1 := packages_folder.FindPackageFromFolder(Folder)
+	PackageName := PackageFolder1.Name
+	//PackageNameFull := PackageFolder1.
 	//PackageName := FindFileNameShort(PackageNameFull)
 	if PackageName == "" && len(Folder.Folders) == 0 {
 		return
@@ -67,7 +76,9 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 	if PackageName != "" {
 		//добавим пакет(package)
 		ElementShape := xgml.CreateElementXGML_Shape(ElementGraph, ElementGroup, PackageName)
-		MapPackagesElements[&Package1] = ElementShape
+		MapPackagesElements[PackageFolder1.Package] = ElementShape
+		MapPackageIDElements[PackageFolder1.Package.ID] = ElementShape
+		//MapPackagesElements[&PackageFolder1] = ElementShape
 	}
 
 	//сортировка
