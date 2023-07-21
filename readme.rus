@@ -23,6 +23,10 @@ make build
 
 3. Запустить файл go-xgml с параметрами:
 go-xgml <your repository directory> <filename.xgml>
+(или сделать файл .env
+DIRECTORY_SOURCE=
+FILENAME_XGML=
+)
 
 4. Открыть полученный файл .xgml в редакторе yEd
 (все элементы сначала будут в центре экрана)
