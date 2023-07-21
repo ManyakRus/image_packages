@@ -3,7 +3,7 @@ Made by Alexander Nikitin
 https://github.com/ManyakRus/image_packages
 
 The go-xgml console utility is designed to display all packages (modules) of any repository in the Golang language
-in the form of a scheme diagram in .xgml format, which can be converted to a .jpg image, etc.
+in the form of a scheme diagram(graph) in .xgml format, which can be converted to a .jpg image, etc.
 It is necessary to understand the structure of the source code of the repository,
 to study or better understand the call structure of the source code.
 Displayed:
