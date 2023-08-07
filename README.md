@@ -1,8 +1,6 @@
-go-xgml application (image_packages)
-Made by Alexander Nikitin
-https://github.com/ManyakRus/image_packages
+Golang module dependency graph, with directories.
 
-The go-xgml console utility is designed to display all packages (modules) of any repository in the Golang language
+The image_packages console utility is designed to display all packages (modules) of any repository in the Golang language
 in the form of a scheme diagram(graph) in .xgml format, which can be converted to a .jpg image, etc.
 It is necessary to understand the structure of the source code of the repository,
 to study or better understand the call structure of the source code.
@@ -19,10 +17,10 @@ https://www.yworks.com/products/yed/download
 
 2. Compile this repository
 make build
-go-xgml file will appear in the bin folder
+image_packages file will appear in the bin folder
 
-3. Run the go-xgml file with parameters:
-go-xgml <your repository directory> <filename.xgml>
+3. Run the image_packages file with parameters:
+image_packages <your repository directory> <filename.xgml>
 
 4. Open the resulting .xgml file in the yEd editor
 (all elements will be in the center of the screen first)
@@ -42,3 +40,6 @@ File-Export
 Source code in Golang language.
 Tested on Linux Ubuntu
 Readme from 10.07.2023
+
+Made by Aleksandr Nikitin
+https://github.com/ManyakRus/image_packages

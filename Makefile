@@ -2,7 +2,7 @@ SERVICEURL=github.com/ManyakRus/image_packages
 SERVICEURL2=github.com/ManyakRus/image_packages
 
 FILEMAIN=./internal/main.go
-FILEAPP=./bin/go-xgml
+FILEAPP=./bin/image_packages
 
 NEW_REPO=github.com/ManyakRus/image_packages
 
@@ -48,4 +48,5 @@ newrepo:
 	find -name *.go -not -path "*/vendor/*"|xargs sed -i 's+$(SERVICEURL)+$(NEW_REPO)+g'
 xgml:
 	clear
-	go-xgml ./ docs/packages.xgml
+	image_packages ./ docs/packages.xgml
+
