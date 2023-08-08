@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"bytes"
 	"github.com/ManyakRus/image_packages/internal/config"
 	"github.com/ManyakRus/image_packages/internal/packages_folder"
 	"github.com/ManyakRus/image_packages/pkg/xgml"
@@ -8,8 +9,10 @@ import (
 	"github.com/ManyakRus/starter/log"
 	"github.com/beevik/etree"
 	"golang.org/x/tools/go/packages"
-	"path/filepath"
+	"io"
+	"os"
 	"sort"
+	"strconv"
 )
 
 // MapPackagesElements - содержит индекс элемента xgml для каждого пакета
@@ -71,8 +74,14 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 		return
 	}
 
+	GroupName := FolderName
+	lines_count := FindLinesCount_package(PackageFolder1.Package)
+	if lines_count > 0 {
+		GroupName = GroupName + " (" + strconv.Itoa(lines_count) + " lines)"
+	}
+
 	//добавим группа (каталог)
-	ElementGroup = xgml.CreateGroupXGML(ElementGraph, ElementGroup, FolderName)
+	ElementGroup = xgml.CreateGroupXGML(ElementGraph, ElementGroup, GroupName)
 	if PackageName != "" {
 		//добавим пакет(package)
 		ElementShape := xgml.CreateElementXGML_Shape(ElementGraph, ElementGroup, PackageName)
@@ -98,13 +107,68 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 	}
 }
 
-// FindFileNameShort - возвращает имя файла(каталога) без пути
-func FindFileNameShort(path string) string {
-	Otvet := ""
-	if path == "" {
-		return Otvet
+//// FindFileNameShort - возвращает имя файла(каталога) без пути
+//func FindFileNameShort(path string) string {
+//	Otvet := ""
+//	if path == "" {
+//		return Otvet
+//	}
+//	Otvet = filepath.Base(path)
+//
+//	return Otvet
+//}
+
+func FindLinesCount_package(Package1 *packages.Package) int {
+	Otvet := 0
+
+	for _, s := range Package1.GoFiles {
+		count := FindLinesCount(s)
+		Otvet = Otvet + count
 	}
-	Otvet = filepath.Base(path)
 
 	return Otvet
+}
+
+func FindLinesCount(FileName string) int {
+	Otvet := 0
+
+	text1, err := os.ReadFile(FileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	reader := bytes.NewReader(text1)
+	Otvet, err = LinesCount(reader)
+
+	return Otvet
+}
+
+func LinesCount(r io.Reader) (int, error) {
+	Otvet := 0
+	var err error
+
+	buf := make([]byte, 8192)
+
+	for {
+		c, err := r.Read(buf)
+		if err != nil {
+			if err == io.EOF && c == 0 {
+				break
+			} else {
+				return Otvet, err
+			}
+		}
+
+		for _, b := range buf[:c] {
+			if b == '\n' {
+				Otvet++
+			}
+		}
+	}
+
+	if err == io.EOF {
+		err = nil
+	}
+
+	return Otvet, err
 }

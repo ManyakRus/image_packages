@@ -28,7 +28,7 @@ func CreateConfigPackages(dir string) *packages.Config {
 	cfg := &packages.Config{}
 	cfg.Context = ctxMain
 	cfg.Dir = dir
-	cfg.Mode = packages.NeedImports + packages.NeedName + packages.NeedExportFile
+	cfg.Mode = packages.NeedImports + packages.NeedName + packages.NeedExportFile + packages.NeedFiles
 	cfg.Tests = false
 	if err != nil {
 		log.Panic("FindAllFolders_FromDir() error: ", err)
