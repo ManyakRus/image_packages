@@ -47,90 +47,38 @@ func FindAllFolders_FromDir(dir string) *folders.Folder {
 	return FolderRoot
 }
 
-func FindRepositoryName(FolderRoot *folders.Folder) string {
-	var Otvet string
-
-	ConfigPackages := CreateConfigPackages(FolderRoot.FileName)
-
-	MassPackages, _ := packages.Load(ConfigPackages)
-	for _, v := range MassPackages {
-		Otvet = v.Name
-		break
-	}
-
-	if Otvet == "." {
-		Otvet = ""
-	}
-
-	return Otvet
-}
-
-//func FillFoldersPackages(FolderRoot *folders.Folder, cfg *packages.Config) FoldersPackages {
-//	RepositoryName := FindRepositoryName(FolderRoot, cfg)
+//func FindRepositoryName(FolderRoot *folders.Folder) string {
+//	var Otvet string
 //
-//	FoldersPackage := FoldersPackages{}
+//	ConfigPackages := CreateConfigPackages(FolderRoot.FileName)
 //
-//	for _, folder1 := range FolderRoot.Folders {
-//		FoldersPackage1 := FoldersPackages{}
-//		FoldersPackage1.Folder = *folder1
-//
-//		cfg.Dir = folder1.Name
-//		MassPackages, _ := packages.Load(cfg)
-//		for _, v := range MassPackages {
-//			FoldersPackage1.PackageName = v.PkgPath
-//			PackageImports := make([]string, 0)
-//
-//			RepositoryLen := len(RepositoryName)
-//			for _, import1 := range v.Imports {
-//				ImportID := import1.PkgPath
-//				if len(ImportID) < RepositoryLen {
-//					continue
-//				}
-//				if ImportID[0:RepositoryLen] != RepositoryName {
-//					continue
-//				}
-//				log.Print("add package: ", import1.PkgPath)
-//				PackageImports = append(PackageImports, import1.PkgPath)
-//			}
-//			FoldersPackage1.PackageImports = PackageImports
-//		}
-//		//FoldersPackage = append(FoldersPackage, FoldersPackage1)
+//	MassPackages, _ := packages.Load(ConfigPackages)
+//	for _, v := range MassPackages {
+//		Otvet = v.Name
+//		break
 //	}
 //
-//	return FoldersPackage
+//	if Otvet == "." {
+//		Otvet = ""
+//	}
+//
+//	return Otvet
 //}
 
 func FindPackageFromFolder(FolderRoot *folders.Folder) PackageFolder {
 	Otvet := PackageFolder{}
-	RepositoryName := FindRepositoryName(FolderRoot)
-	Otvet.Name = RepositoryName
-	Otvet.FileName = FolderRoot.FileName
 
-	//PackageImports := make([]*folders.Folder, 0)
-
+	RepositoryName := "" //FindRepositoryName(FolderRoot)
 	ConfigPackages := CreateConfigPackages(FolderRoot.FileName)
 	MassPackages, _ := packages.Load(ConfigPackages)
-	//for _, v := range MassPackages {
-	//	Otvet.PkgPath = v.PkgPath
-	//	RepositoryLen := len(RepositoryName)
-	//	for _, import1 := range v.Imports {
-	//		ImportID := import1.ID
-	//		if len(ImportID) < RepositoryLen {
-	//			continue
-	//		}
-	//		if ImportID[0:RepositoryLen] != RepositoryName {
-	//			continue
-	//		}
-	//		//log.Print("add package: ", import1.PkgPath)
-	//		//PackageFolder1 := PackageFolder{}
-	//		PackageImports = append(PackageImports, import1)
-	//	}
-	//}
 
 	for _, v := range MassPackages {
 		Otvet.Package = v
+		RepositoryName = v.Name
 		break
 	}
+	Otvet.Name = RepositoryName
+	Otvet.FileName = FolderRoot.FileName
 	Otvet.Imports = MassPackages
 
 	return Otvet

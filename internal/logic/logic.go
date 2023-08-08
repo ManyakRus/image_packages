@@ -11,6 +11,7 @@ import (
 	"golang.org/x/tools/go/packages"
 	"io"
 	"os"
+	"regexp"
 	"sort"
 	"strconv"
 )
@@ -75,9 +76,17 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 	}
 
 	GroupName := FolderName
-	lines_count := FindLinesCount_package(PackageFolder1.Package)
-	if lines_count > 0 {
-		GroupName = GroupName + " (" + strconv.Itoa(lines_count) + " lines)"
+	lines_count, func_count := FindLinesCount_package(PackageFolder1.Package)
+	if lines_count > 0 || func_count > 0 {
+		GroupName = GroupName + " ("
+		if func_count > 0 {
+			GroupName = GroupName + strconv.Itoa(func_count) + " func"
+			GroupName = GroupName + ", "
+		}
+		if lines_count > 0 {
+			GroupName = GroupName + strconv.Itoa(lines_count) + " lines"
+		}
+		GroupName = GroupName + ")"
 	}
 
 	//добавим группа (каталог)
@@ -118,32 +127,40 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 //	return Otvet
 //}
 
-func FindLinesCount_package(Package1 *packages.Package) int {
-	Otvet := 0
+func FindLinesCount_package(Package1 *packages.Package) (int, int) {
+	LinesCount := 0
+	FuncCount := 0
 
 	for _, s := range Package1.GoFiles {
-		count := FindLinesCount(s)
-		Otvet = Otvet + count
+		count, func_count := FindLinesCount(s)
+		LinesCount = LinesCount + count
+		FuncCount = FuncCount + func_count
 	}
 
-	return Otvet
+	return LinesCount, FuncCount
 }
 
-func FindLinesCount(FileName string) int {
-	Otvet := 0
+func FindLinesCount(FileName string) (int, int) {
+	LinesCount := 0
+	FuncCount := 0
 
-	text1, err := os.ReadFile(FileName)
+	bytes1, err := os.ReadFile(FileName)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	reader := bytes.NewReader(text1)
-	Otvet, err = LinesCount(reader)
+	reader := bytes.NewReader(bytes1)
+	LinesCount, err = LinesCount_reader(reader)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	return Otvet
+	FuncCount = FindFuncCount(&bytes1)
+
+	return LinesCount, FuncCount
 }
 
-func LinesCount(r io.Reader) (int, error) {
+func LinesCount_reader(r io.Reader) (int, error) {
 	Otvet := 0
 	var err error
 
@@ -171,4 +188,33 @@ func LinesCount(r io.Reader) (int, error) {
 	}
 
 	return Otvet, err
+}
+
+// FindFuncCount - находит количество функций(func) в файле
+func FindFuncCount(bytes *[]byte) int {
+	Otvet := 0
+
+	s := string(*bytes)
+	sFind := "(\n|\t| )func( |\t)"
+
+	Otvet = CountMatches(s, regexp.MustCompile(sFind))
+
+	return Otvet
+}
+
+// CountMatches - находит количество совпадений в regexp
+func CountMatches(s string, re *regexp.Regexp) int {
+	total := 0
+	for start := 0; start < len(s); {
+		remaining := s[start:] // slicing the string is cheap
+		loc := re.FindStringIndex(remaining)
+		if loc == nil {
+			break
+		}
+		// loc[0] is the start index of the match,
+		// loc[1] is the end index (exclusive)
+		start += loc[1]
+		total++
+	}
+	return total
 }
