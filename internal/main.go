@@ -17,4 +17,6 @@ func main() {
 	log.Info("file xgml: ", FileName)
 	logic.StartFillAll(FileName)
 
+	//go parse_go.ParseDir("") //удалить
+	//go print("1")
 }
