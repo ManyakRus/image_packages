@@ -11,9 +11,9 @@ import (
 
 // GoImport - содержит информацию о вызове горутины go
 type GoImport struct {
-	go_package_name   string //псевдоним импорта вызываемой функции из другого пакета
-	go_package_import string //полный путь импорта вызываемой функции из другого пакета
-	go_func_name      string //имя вызываемой функции
+	Go_package_name   string //псевдоним импорта вызываемой функции из другого пакета
+	Go_package_import string //полный путь импорта вызываемой функции из другого пакета
+	Go_func_name      string //имя вызываемой функции
 }
 
 // ParseDir - парсит все файлы .go, кроме тсетов
@@ -68,6 +68,7 @@ func ParseFile(Filename string) (*ast.File, error) {
 	return AstFIle, err
 }
 
+// FindGo - находит массив команд go (горутины)
 func FindGo(AstFile *ast.File) []GoImport {
 	Otvet := make([]GoImport, 0)
 
@@ -91,9 +92,9 @@ func FindGo(AstFile *ast.File) []GoImport {
 							GoStmt1 := list1.(*ast.GoStmt)
 							go_package_name, go_package_import, go_func_name := FindGoValues(AstFile, GoStmt1)
 							GoImport1 := GoImport{}
-							GoImport1.go_package_name = go_package_name
-							GoImport1.go_package_import = go_package_import
-							GoImport1.go_func_name = go_func_name
+							GoImport1.Go_package_name = go_package_name
+							GoImport1.Go_package_import = go_package_import
+							GoImport1.Go_func_name = go_func_name
 							Otvet = append(Otvet, GoImport1)
 						}
 					}

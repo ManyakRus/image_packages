@@ -49,6 +49,10 @@ func CurrentDirectory() string {
 // FillFlags - заполняет параметры из командной строки
 func FillFlags() {
 	Args := os.Args[1:]
+	if len(Args) != 2 {
+		return
+	}
+
 	if len(Args) > 0 {
 		Settings.DIRECTORY_SOURCE = Args[0]
 	}

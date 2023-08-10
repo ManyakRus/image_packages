@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"github.com/ManyakRus/image_packages/internal/config"
 	"github.com/ManyakRus/image_packages/internal/packages_folder"
+	"github.com/ManyakRus/image_packages/internal/parse_go"
 	"github.com/ManyakRus/image_packages/pkg/xgml"
 	"github.com/ManyakRus/starter/folders"
 	"github.com/ManyakRus/starter/log"
@@ -39,6 +40,10 @@ func StartFillAll(FileName string) {
 	log.Info("Start fill links")
 	FillLinks(ElementGraph)
 
+	//заполним связи горутин
+	log.Info("Start fill goroutine links")
+	FillLinks_goroutine(ElementGraph)
+
 	log.Info("Start save file")
 	DocXML.IndentTabs()
 	err := DocXML.WriteToFile(FileName)
@@ -59,6 +64,44 @@ func FillLinks(ElementGraph *etree.Element) {
 				continue
 			}
 			xgml.CreateLinkXGML(ElementGraph, ElementFrom.Index(), ElementImport.Index())
+		}
+	}
+}
+
+// FillLinks_goroutine - заполняет связи (стрелки) между пакетами для горутин go, синим цветом
+func FillLinks_goroutine(ElementGraph *etree.Element) {
+	for PackageFrom, ElementFrom := range MapPackagesElements {
+		for _, Filename1 := range PackageFrom.GoFiles {
+
+			AstFile, err := parse_go.ParseFile(Filename1)
+			if err != nil {
+				log.Warn("ParseFile() ", Filename1, " error: ", err)
+				continue
+			}
+
+			MassGoImport := parse_go.FindGo(AstFile)
+			for _, GoImport1 := range MassGoImport {
+				//Go_package_name := GoImport1.Go_package_name
+				Go_package_import := GoImport1.Go_package_import
+				Go_func_name := GoImport1.Go_func_name
+
+				ElementImport, ok := MapPackageIDElements[Go_package_import]
+				if ok == false {
+					//посторонние импорты
+					//continue
+					ElementImport = ElementFrom
+				}
+				label := Go_func_name
+				xgml.CreateLinkXGML_blue(ElementGraph, ElementFrom.Index(), ElementImport.Index(), label)
+			}
+
+			//ElementImport, ok := MapPackageIDElements[PackageImport.ID]
+			//if ok == false {
+			//	//посторонние импорты
+			//	//log.Panic("MapPackagesElements[PackageImport] error: ok =false")
+			//	continue
+			//}
+			//xgml.CreateLinkXGML(ElementGraph, ElementFrom.Index(), ElementImport.Index())
 		}
 	}
 }

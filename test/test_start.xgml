@@ -4,17 +4,17 @@
 		<attribute key="hierarchic" type="int">1</attribute>
 		<section name="node">
 			<attribute key="id" type="int">1</attribute>
-			<attribute key="label" type="string">image_packages</attribute>
+			<attribute key="label" type="string">logic (9 func, 263 lines)</attribute>
 			<attribute key="isGroup" type="boolean">true</attribute>
 			<section name="graphics">
 				<attribute key="type" type="string">roundrectangle</attribute>
 				<attribute key="fill" type="string">#F5F5F5</attribute>
 				<attribute key="outline" type="string">#F5F5F5</attribute>
 				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">150</attribute>
+				<attribute key="w" type="double">260</attribute>
 			</section>
 			<section name="LabelGraphics">
-				<attribute key="text" type="String">image_packages</attribute>
+				<attribute key="text" type="String">logic (9 func, 263 lines)</attribute>
 				<attribute key="fill" type="String">#EBEBEB</attribute>
 				<attribute key="fontSize" type="int">10</attribute>
 				<attribute key="anchor" type="String">n</attribute>
@@ -26,130 +26,6 @@
 		</section>
 		<section name="node">
 			<attribute key="id" type="int">2</attribute>
-			<attribute key="label" type="string">main</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">rectangle</attribute>
-				<attribute key="fill" type="string">#FFFFFF</attribute>
-				<attribute key="outline" type="string">#000000</attribute>
-				<attribute key="h" type="double">26</attribute>
-				<attribute key="w" type="double">64</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">main</attribute>
-				<attribute key="fontSize" type="int">16</attribute>
-			</section>
-			<attribute key="gid" type="int">1</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">3</attribute>
-			<attribute key="label" type="string">cmd</attribute>
-			<attribute key="isGroup" type="boolean">true</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">roundrectangle</attribute>
-				<attribute key="fill" type="string">#F5F5F5</attribute>
-				<attribute key="outline" type="string">#F5F5F5</attribute>
-				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">40</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">cmd</attribute>
-				<attribute key="fill" type="String">#EBEBEB</attribute>
-				<attribute key="fontSize" type="int">10</attribute>
-				<attribute key="anchor" type="String">n</attribute>
-				<attribute key="borderDistance" type="double">0</attribute>
-				<attribute key="leftBorderInset" type="double">50</attribute>
-				<attribute key="rightBorderInset" type="double">50</attribute>
-				<attribute key="model" type="String">sandwich</attribute>
-			</section>
-			<attribute key="gid" type="int">1</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">4</attribute>
-			<attribute key="label" type="string">internal</attribute>
-			<attribute key="isGroup" type="boolean">true</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">roundrectangle</attribute>
-				<attribute key="fill" type="string">#F5F5F5</attribute>
-				<attribute key="outline" type="string">#F5F5F5</attribute>
-				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">90</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">internal</attribute>
-				<attribute key="fill" type="String">#EBEBEB</attribute>
-				<attribute key="fontSize" type="int">10</attribute>
-				<attribute key="anchor" type="String">n</attribute>
-				<attribute key="borderDistance" type="double">0</attribute>
-				<attribute key="leftBorderInset" type="double">50</attribute>
-				<attribute key="rightBorderInset" type="double">50</attribute>
-				<attribute key="model" type="String">sandwich</attribute>
-			</section>
-			<attribute key="gid" type="int">1</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">5</attribute>
-			<attribute key="label" type="string">config</attribute>
-			<attribute key="isGroup" type="boolean">true</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">roundrectangle</attribute>
-				<attribute key="fill" type="string">#F5F5F5</attribute>
-				<attribute key="outline" type="string">#F5F5F5</attribute>
-				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">70</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">config</attribute>
-				<attribute key="fill" type="String">#EBEBEB</attribute>
-				<attribute key="fontSize" type="int">10</attribute>
-				<attribute key="anchor" type="String">n</attribute>
-				<attribute key="borderDistance" type="double">0</attribute>
-				<attribute key="leftBorderInset" type="double">50</attribute>
-				<attribute key="rightBorderInset" type="double">50</attribute>
-				<attribute key="model" type="String">sandwich</attribute>
-			</section>
-			<attribute key="gid" type="int">4</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">6</attribute>
-			<attribute key="label" type="string">config</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">rectangle</attribute>
-				<attribute key="fill" type="string">#FFFFFF</attribute>
-				<attribute key="outline" type="string">#000000</attribute>
-				<attribute key="h" type="double">26</attribute>
-				<attribute key="w" type="double">80</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">config</attribute>
-				<attribute key="fontSize" type="int">16</attribute>
-			</section>
-			<attribute key="gid" type="int">5</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">7</attribute>
-			<attribute key="label" type="string">logic</attribute>
-			<attribute key="isGroup" type="boolean">true</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">roundrectangle</attribute>
-				<attribute key="fill" type="string">#F5F5F5</attribute>
-				<attribute key="outline" type="string">#F5F5F5</attribute>
-				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">60</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">logic</attribute>
-				<attribute key="fill" type="String">#EBEBEB</attribute>
-				<attribute key="fontSize" type="int">10</attribute>
-				<attribute key="anchor" type="String">n</attribute>
-				<attribute key="borderDistance" type="double">0</attribute>
-				<attribute key="leftBorderInset" type="double">50</attribute>
-				<attribute key="rightBorderInset" type="double">50</attribute>
-				<attribute key="model" type="String">sandwich</attribute>
-			</section>
-			<attribute key="gid" type="int">4</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">8</attribute>
 			<attribute key="label" type="string">logic</attribute>
 			<section name="graphics">
 				<attribute key="type" type="string">rectangle</attribute>
@@ -162,148 +38,7 @@
 				<attribute key="text" type="String">logic</attribute>
 				<attribute key="fontSize" type="int">16</attribute>
 			</section>
-			<attribute key="gid" type="int">7</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">9</attribute>
-			<attribute key="label" type="string">packages_folder</attribute>
-			<attribute key="isGroup" type="boolean">true</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">roundrectangle</attribute>
-				<attribute key="fill" type="string">#F5F5F5</attribute>
-				<attribute key="outline" type="string">#F5F5F5</attribute>
-				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">160</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">packages_folder</attribute>
-				<attribute key="fill" type="String">#EBEBEB</attribute>
-				<attribute key="fontSize" type="int">10</attribute>
-				<attribute key="anchor" type="String">n</attribute>
-				<attribute key="borderDistance" type="double">0</attribute>
-				<attribute key="leftBorderInset" type="double">50</attribute>
-				<attribute key="rightBorderInset" type="double">50</attribute>
-				<attribute key="model" type="String">sandwich</attribute>
-			</section>
-			<attribute key="gid" type="int">4</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">10</attribute>
-			<attribute key="label" type="string">packages_folder</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">rectangle</attribute>
-				<attribute key="fill" type="string">#FFFFFF</attribute>
-				<attribute key="outline" type="string">#000000</attribute>
-				<attribute key="h" type="double">26</attribute>
-				<attribute key="w" type="double">152</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">packages_folder</attribute>
-				<attribute key="fontSize" type="int">16</attribute>
-			</section>
-			<attribute key="gid" type="int">9</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">11</attribute>
-			<attribute key="label" type="string">pkg</attribute>
-			<attribute key="isGroup" type="boolean">true</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">roundrectangle</attribute>
-				<attribute key="fill" type="string">#F5F5F5</attribute>
-				<attribute key="outline" type="string">#F5F5F5</attribute>
-				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">40</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">pkg</attribute>
-				<attribute key="fill" type="String">#EBEBEB</attribute>
-				<attribute key="fontSize" type="int">10</attribute>
-				<attribute key="anchor" type="String">n</attribute>
-				<attribute key="borderDistance" type="double">0</attribute>
-				<attribute key="leftBorderInset" type="double">50</attribute>
-				<attribute key="rightBorderInset" type="double">50</attribute>
-				<attribute key="model" type="String">sandwich</attribute>
-			</section>
 			<attribute key="gid" type="int">1</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">12</attribute>
-			<attribute key="label" type="string">xgml</attribute>
-			<attribute key="isGroup" type="boolean">true</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">roundrectangle</attribute>
-				<attribute key="fill" type="string">#F5F5F5</attribute>
-				<attribute key="outline" type="string">#F5F5F5</attribute>
-				<attribute key="h" type="double">12</attribute>
-				<attribute key="w" type="double">50</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">xgml</attribute>
-				<attribute key="fill" type="String">#EBEBEB</attribute>
-				<attribute key="fontSize" type="int">10</attribute>
-				<attribute key="anchor" type="String">n</attribute>
-				<attribute key="borderDistance" type="double">0</attribute>
-				<attribute key="leftBorderInset" type="double">50</attribute>
-				<attribute key="rightBorderInset" type="double">50</attribute>
-				<attribute key="model" type="String">sandwich</attribute>
-			</section>
-			<attribute key="gid" type="int">11</attribute>
-		</section>
-		<section name="node">
-			<attribute key="id" type="int">13</attribute>
-			<attribute key="label" type="string">xgml</attribute>
-			<section name="graphics">
-				<attribute key="type" type="string">rectangle</attribute>
-				<attribute key="fill" type="string">#FFFFFF</attribute>
-				<attribute key="outline" type="string">#000000</attribute>
-				<attribute key="h" type="double">26</attribute>
-				<attribute key="w" type="double">64</attribute>
-			</section>
-			<section name="LabelGraphics">
-				<attribute key="text" type="String">xgml</attribute>
-				<attribute key="fontSize" type="int">16</attribute>
-			</section>
-			<attribute key="gid" type="int">12</attribute>
-		</section>
-		<section name="edge">
-			<attribute key="source" type="int">2</attribute>
-			<attribute key="target" type="int">6</attribute>
-			<section name="graphics">
-				<attribute key="fill" type="string">#000000</attribute>
-				<attribute key="targetArrow" type="string">standard</attribute>
-			</section>
-		</section>
-		<section name="edge">
-			<attribute key="source" type="int">2</attribute>
-			<attribute key="target" type="int">8</attribute>
-			<section name="graphics">
-				<attribute key="fill" type="string">#000000</attribute>
-				<attribute key="targetArrow" type="string">standard</attribute>
-			</section>
-		</section>
-		<section name="edge">
-			<attribute key="source" type="int">8</attribute>
-			<attribute key="target" type="int">6</attribute>
-			<section name="graphics">
-				<attribute key="fill" type="string">#000000</attribute>
-				<attribute key="targetArrow" type="string">standard</attribute>
-			</section>
-		</section>
-		<section name="edge">
-			<attribute key="source" type="int">8</attribute>
-			<attribute key="target" type="int">10</attribute>
-			<section name="graphics">
-				<attribute key="fill" type="string">#000000</attribute>
-				<attribute key="targetArrow" type="string">standard</attribute>
-			</section>
-		</section>
-		<section name="edge">
-			<attribute key="source" type="int">8</attribute>
-			<attribute key="target" type="int">13</attribute>
-			<section name="graphics">
-				<attribute key="fill" type="string">#000000</attribute>
-				<attribute key="targetArrow" type="string">standard</attribute>
-			</section>
 		</section>
 	</section>
 </section>
