@@ -28,7 +28,7 @@ func StartFillAll(FileName string) {
 
 	//xgml.AddDirectory(buffer, FolderRoot.Name)
 
-	DocXML := xgml.CreateDocXGML("")
+	DocXML := xgml.CreateDocXGML()
 	ElementGraph := DocXML.FindElement("/section/section")
 
 	//заполним каталоги и пакеты
