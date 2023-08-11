@@ -49,17 +49,17 @@
 			<attribute key="id" type="int">2</attribute>
 			<attribute key="label" type="String">GroupCaption1</attribute>
 			<section name="graphics">
-				<attribute key="x" type="double">63.868511999999996</attribute>
-				<attribute key="y" type="double">61.0</attribute>
-				<attribute key="w" type="double">113.35007999999999</attribute>
-				<attribute key="h" type="double">101.96875</attribute>
+				<attribute key="x" type="double">36.868511999999996</attribute>
+				<attribute key="y" type="double">34.0</attribute>
+				<attribute key="w" type="double">167.35008</attribute>
+				<attribute key="h" type="double">47.96875</attribute>
 				<attribute key="type" type="String">roundrectangle</attribute>
 				<attribute key="fill" type="String">#F5F5F5</attribute>
 				<attribute key="outline" type="String">#000000</attribute>
 				<attribute key="outlineStyle" type="String">dashed</attribute>
 				<attribute key="topBorderInset" type="double">0.0</attribute>
-				<attribute key="bottomBorderInset" type="double">54.0</attribute>
-				<attribute key="leftBorderInset" type="double">0.0</attribute>
+				<attribute key="bottomBorderInset" type="double">0.0</attribute>
+				<attribute key="leftBorderInset" type="double">54.0</attribute>
 				<attribute key="rightBorderInset" type="double">23.35007999999999</attribute>
 			</section>
 			<section name="LabelGraphics">

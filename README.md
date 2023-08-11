@@ -7,7 +7,9 @@ to study or better understand the call structure of the source code.
 Displayed:
 - directory names
 - package names
+- number of functions and lines in the package
 - package relationship arrows
+- goroutine call arrows (go)
 
 Sample execution (pictures) can be found in the examples directory
 

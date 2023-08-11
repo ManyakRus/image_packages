@@ -25,7 +25,7 @@ var MapPackageIDElements = make(map[string]*etree.Element, 0)
 func StartFillAll(FileName string) {
 	FolderRoot := packages_folder.FindAllFolders_FromDir(config.Settings.DIRECTORY_SOURCE)
 	if FolderRoot == nil {
-		log.Error("Error: not found folder: ", FileName)
+		log.Error("Error: not found folder: ", FolderRoot)
 		return
 	}
 
