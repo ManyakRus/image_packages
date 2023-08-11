@@ -9,9 +9,6 @@ const FILENAME_XGML = "packages.xgml"
 // Settings хранит все нужные переменные окружения
 var Settings SettingsINI
 
-// NeedReconnect - флаг необходимости переподключения
-var NeedReconnect bool
-
 // SettingsINI - структура для хранения всех нужных переменных окружения
 type SettingsINI struct {
 	DIRECTORY_SOURCE string
@@ -49,7 +46,7 @@ func CurrentDirectory() string {
 // FillFlags - заполняет параметры из командной строки
 func FillFlags() {
 	Args := os.Args[1:]
-	if len(Args) != 2 {
+	if len(Args) > 2 {
 		return
 	}
 

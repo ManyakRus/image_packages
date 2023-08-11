@@ -7,6 +7,7 @@ import (
 	"go/parser"
 	"go/token"
 	"io/fs"
+	"strings"
 )
 
 // GoImport - содержит информацию о вызове горутины go
@@ -147,14 +148,40 @@ func FindPackageImport_FromName(AstFile *ast.File, go_package_name string) strin
 		}
 
 		//импорт без псевдонима - последнее слово в строке
-		Value := micro.Trim(import1.Path.Value)
-		len1 := len(Value)
-		len2 := len(go_package_name)
-		if Value[len1-len2-1-2:] == "/"+go_package_name+`"` {
+		ImportString := micro.Trim(import1.Path.Value)
+		//len1 := len(ImportString)
+		//len2 := len(go_package_name)
+		last_word := FindLastWordImport(ImportString)
+		if last_word == go_package_name {
 			Otvet = import1.Path.Value
+			Otvet = DeleteQuotes(Otvet)
 			break
 		}
 	}
+
+	return Otvet
+}
+
+func FindLastWordImport(ImportString string) string {
+	Otvet := ""
+
+	pos1 := strings.LastIndex(ImportString, "/")
+	if pos1 < 0 {
+		return Otvet
+	}
+	if len(ImportString) < (pos1 + 1 + 1) {
+		return Otvet
+	}
+	Otvet = ImportString[pos1+1:]
+	Otvet = DeleteQuotes(Otvet)
+
+	return Otvet
+}
+
+func DeleteQuotes(s string) string {
+	Otvet := s
+
+	Otvet = strings.ReplaceAll(Otvet, `"`, ``)
 
 	return Otvet
 }

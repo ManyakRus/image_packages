@@ -8,9 +8,14 @@ import (
 	"strings"
 )
 
+// FONT_SIZE_SHAPE - размер шрифта прямоугольника
 var FONT_SIZE_SHAPE = 16
 
+// FONT_SIZE_SHAPE - размер шрифта групп
 var FONT_SIZE_GROUP = 10
+
+// FONT_SIZE_EDGE - размер шрифта стрелок
+var FONT_SIZE_EDGE = 8
 
 //var doc = etree.NewDocument()
 
@@ -180,8 +185,8 @@ func CreateLinkXGML(ElementGraph *etree.Element, IndexElementFrom, IndexElementT
 // CreateLinkXGML - создаёт элемент xgml - стрелка синяя с заголовком
 func CreateLinkXGML_blue(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int, label string) {
 
-	Width := float64(findWidthGroup(label))
-	Height := float64(findHeightGroup(label))
+	Width := float64(findWidthEdge(label))
+	Height := float64(findHeightEdge(label))
 
 	//edge
 	ElementEdge := addSectionXML(ElementGraph, "edge")
@@ -198,7 +203,7 @@ func CreateLinkXGML_blue(ElementGraph *etree.Element, IndexElementFrom, IndexEle
 	ElementLabelGraphics := addSectionXML(ElementEdge, "LabelGraphics")
 	addAttributeXML(ElementLabelGraphics, "text", "String", label)
 	addAttributeXML(ElementLabelGraphics, "color", "String", "#0000FF")
-	addAttributeXML(ElementLabelGraphics, "fontSize", "int", strconv.Itoa(FONT_SIZE_GROUP))
+	addAttributeXML(ElementLabelGraphics, "fontSize", "int", strconv.Itoa(FONT_SIZE_EDGE))
 	addAttributeXML(ElementLabelGraphics, "fontName", "String", "Dialog")
 	addAttributeXML(ElementLabelGraphics, "configuration", "String", "AutoFlippingLabel")
 	addAttributeXML_double(ElementLabelGraphics, "contentWidth", Width)
@@ -251,6 +256,31 @@ func findHeightGroup(ElementName string) int {
 	Otvet := 30
 
 	RowsTotal := countLines(ElementName)
+
+	Otvet = Otvet + (RowsTotal-1)*18
+
+	return Otvet
+
+}
+
+// findWidthEdge - возвращает число - ширину элемента
+func findWidthEdge(Label string) int {
+	Otvet := 10
+
+	LenMax := findMaxLenRow(Label)
+	var OtvetF float64
+	OtvetF = float64(Otvet) + float64(LenMax)*10
+	Otvet = int(math.Round(OtvetF))
+
+	return Otvet
+}
+
+// findHeightEdge - возвращает число - высоту элемента
+func findHeightEdge(Label string) int {
+
+	Otvet := 30
+
+	RowsTotal := countLines(Label)
 
 	Otvet = Otvet + (RowsTotal-1)*18
 
