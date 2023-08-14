@@ -23,8 +23,8 @@ var FONT_SIZE_EDGE = 8
 // CreateElement_Shape - создаёт элемент xgml - прямоугольник
 func CreateElement_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
 
-	Width := findWidthShape(ElementName)
-	Height := findHeightShape(ElementName)
+	Width := findWidth_Shape(ElementName)
+	Height := findHeight_Shape(ElementName)
 
 	//node
 	ElementNode := xml.AddSectionXML(ElementGraph, "node")
@@ -52,11 +52,11 @@ func CreateElement_Shape(ElementGraph *etree.Element, ElementGroup *etree.Elemen
 	return ElementNode
 }
 
-// CreateElementGroup - создаёт элемент xgml - группа
-func CreateElementGroup(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
+// CreateElement_Group - создаёт элемент xgml - группа
+func CreateElement_Group(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
 
-	Width := findWidthGroup(GroupCaption)
-	Height := findHeightGroup(GroupCaption)
+	Width := findWidth_Group(GroupCaption)
+	Height := findHeight_Group(GroupCaption)
 
 	//node
 	ElementNode := xml.AddSectionXML(ElementGraph, "node")
@@ -91,8 +91,8 @@ func CreateElementGroup(ElementGraph, ElementGroup *etree.Element, GroupCaption 
 	return ElementNode
 }
 
-// CreateElementEdge - создаёт элемент xgml - стрелка
-func CreateElementEdge(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int) {
+// CreateElement_Edge - создаёт элемент xgml - стрелка
+func CreateElement_Edge(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int) {
 
 	//edge
 	ElementEdge := xml.AddSectionXML(ElementGraph, "edge")
@@ -106,11 +106,11 @@ func CreateElementEdge(ElementGraph *etree.Element, IndexElementFrom, IndexEleme
 
 }
 
-// CreateElementEdge_blue - создаёт элемент xgml - стрелка синяя с заголовком
-func CreateElementEdge_blue(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int, label string) {
+// CreateElement_Edge_blue - создаёт элемент xgml - стрелка синяя с заголовком
+func CreateElement_Edge_blue(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int, label string) {
 
-	Width := float64(findWidthEdge(label))
-	Height := float64(findHeightEdge(label))
+	Width := float64(findWidth_Edge(label))
+	Height := float64(findHeight_Edge(label))
 
 	//edge
 	ElementEdge := xml.AddSectionXML(ElementGraph, "edge")
@@ -137,8 +137,8 @@ func CreateElementEdge_blue(ElementGraph *etree.Element, IndexElementFrom, Index
 
 }
 
-// findWidthShape - возвращает число - ширину элемента
-func findWidthShape(ElementName string) int {
+// findWidth_Shape - возвращает число - ширину элемента
+func findWidth_Shape(ElementName string) int {
 	Otvet := FONT_SIZE_SHAPE * 2
 
 	LenMax := findMaxLenRow(ElementName)
@@ -149,8 +149,8 @@ func findWidthShape(ElementName string) int {
 	return Otvet
 }
 
-// findHeightShape - возвращает число - высоту элемента
-func findHeightShape(ElementName string) int {
+// findHeight_Shape - возвращает число - высоту элемента
+func findHeight_Shape(ElementName string) int {
 
 	Otvet := 10 + FONT_SIZE_SHAPE*3
 
@@ -162,8 +162,8 @@ func findHeightShape(ElementName string) int {
 
 }
 
-// findWidthGroup - возвращает число - ширину элемента
-func findWidthGroup(ElementName string) int {
+// findWidth_Group - возвращает число - ширину элемента
+func findWidth_Group(ElementName string) int {
 	Otvet := 10
 
 	LenMax := findMaxLenRow(ElementName)
@@ -174,8 +174,8 @@ func findWidthGroup(ElementName string) int {
 	return Otvet
 }
 
-// findHeightGroup - возвращает число - высоту элемента
-func findHeightGroup(ElementName string) int {
+// findHeight_Group - возвращает число - высоту элемента
+func findHeight_Group(ElementName string) int {
 
 	Otvet := 30
 
@@ -187,8 +187,8 @@ func findHeightGroup(ElementName string) int {
 
 }
 
-// findWidthEdge - возвращает число - ширину элемента
-func findWidthEdge(Label string) int {
+// findWidth_Edge - возвращает число - ширину элемента
+func findWidth_Edge(Label string) int {
 	Otvet := 10
 
 	LenMax := findMaxLenRow(Label)
@@ -199,8 +199,8 @@ func findWidthEdge(Label string) int {
 	return Otvet
 }
 
-// findHeightEdge - возвращает число - высоту элемента
-func findHeightEdge(Label string) int {
+// findHeight_Edge - возвращает число - высоту элемента
+func findHeight_Edge(Label string) int {
 
 	Otvet := 30
 
