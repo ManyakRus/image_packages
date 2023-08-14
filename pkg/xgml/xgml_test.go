@@ -1,13 +1,14 @@
 package xgml
 
 import (
+	"github.com/ManyakRus/image_packages/pkg/xml"
 	"github.com/ManyakRus/starter/micro"
 	"testing"
 )
 
 func TestCreateNewXGML(t *testing.T) {
 	dir := micro.ProgramDir()
-	DocXML := CreateDocXGML()
+	DocXML := xml.CreateDocXGML()
 	ElementGraph := DocXML.FindElement("/section/section")
 
 	Group1 := CreateGroupXGML(ElementGraph, nil, "GroupCaption1")

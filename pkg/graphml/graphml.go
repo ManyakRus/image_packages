@@ -1,4 +1,4 @@
-package xgml
+package graphml
 
 import (
 	"github.com/ManyakRus/image_packages/pkg/xml"
@@ -20,8 +20,8 @@ var FONT_SIZE_EDGE = 8
 
 //var doc = etree.NewDocument()
 
-// CreateElementXGML_Shape - создаёт элемент xgml - прямоугольник
-func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
+// CreateElement_Shape - создаёт элемент xgml - прямоугольник
+func CreateElement_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
 
 	Width := findWidthShape(ElementName)
 	Height := findHeightShape(ElementName)
@@ -52,8 +52,8 @@ func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.El
 	return ElementNode
 }
 
-// CreateGroupXGML - создаёт элемент xgml - группа
-func CreateGroupXGML(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
+// CreateElementGroup - создаёт элемент xgml - группа
+func CreateElementGroup(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
 
 	Width := findWidthGroup(GroupCaption)
 	Height := findHeightGroup(GroupCaption)
@@ -91,66 +91,8 @@ func CreateGroupXGML(ElementGraph, ElementGroup *etree.Element, GroupCaption str
 	return ElementNode
 }
 
-// CreateElementXGML_UML - создаёт элемент xgml - UML
-func CreateElementXGML_UML(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementId, ElementName string) *etree.Element {
-
-	if ElementId == "" {
-		ElementId = ElementName
-	}
-
-	Width := findWidthShape(ElementName)
-	Height := findHeightShape(ElementName)
-
-	//node
-	ElementNode := xml.AddSectionXML(ElementGraph, "node")
-	xml.AddAttributeXML(ElementNode, "id", "string", ElementId)
-	xml.AddAttributeXML(ElementNode, "label", "string", "")
-
-	//graphics
-	ElementGraphics := xml.AddSectionXML(ElementNode, "graphics")
-	xml.AddAttributeXML(ElementGraphics, "type", "string", "rectangle")
-	xml.AddAttributeXML(ElementGraphics, "fill", "string", "#FFFFFF") //было #FFCC00
-	xml.AddAttributeXML(ElementGraphics, "outline", "string", "#000000")
-	xml.AddAttributeXML(ElementGraphics, "customconfiguration", "string", "com.yworks.entityRelationship.big_entity")
-	xml.AddAttributeXML(ElementGraphics, "h", "double", strconv.Itoa(Height))
-	xml.AddAttributeXML(ElementGraphics, "w", "double", strconv.Itoa(Width))
-
-	//style
-	ElementStyleProperties := xml.AddSectionXML(ElementGraphics, "styleproperties")
-
-	//property
-	xml.AddSectionXML(ElementStyleProperties, "property")
-	xml.AddAttributeXML(ElementStyleProperties, "name", "string", "y.view.ShadowNodePainter.SHADOW_PAINTING")
-	xml.AddAttributeXML(ElementStyleProperties, "valueClass", "string", "java.lang.Boolean")
-	xml.AddAttributeXML(ElementStyleProperties, "value", "string", "true")
-
-	//LabelGraphics
-	ElementLabelGraphics := xml.AddSectionXML(ElementNode, "LabelGraphics")
-	xml.AddAttributeXML(ElementLabelGraphics, "text", "String", ElementId)
-	xml.AddAttributeXML(ElementLabelGraphics, "fontSize", "int", "12")
-	xml.AddAttributeXML(ElementLabelGraphics, "configuration", "String", "com.yworks.entityRelationship.label.name")
-	xml.AddAttributeXML(ElementLabelGraphics, "anchor", "String", "t")
-	xml.AddAttributeXML(ElementLabelGraphics, "contentWidth", "int", "24")
-	xml.AddAttributeXML(ElementLabelGraphics, "contentHeight", "int", "18")
-
-	//LabelGraphics2
-	ElementLabelGraphics2 := xml.AddSectionXML(ElementNode, "LabelGraphics")
-	xml.AddAttributeXML(ElementLabelGraphics2, "text", "String", ElementName)
-	xml.AddAttributeXML(ElementLabelGraphics2, "fontSize", "int", "12")
-	xml.AddAttributeXML(ElementLabelGraphics2, "configuration", "String", "com.yworks.entityRelationship.label.attributes")
-	xml.AddAttributeXML(ElementLabelGraphics2, "alignment", "String", "left")
-	xml.AddAttributeXML(ElementLabelGraphics2, "contentWidth", "int", "24")
-	xml.AddAttributeXML(ElementLabelGraphics2, "contentHeight", "int", "18")
-
-	//group
-	if (ElementGroup) != nil {
-		xml.AddAttributeXML_int(ElementGraph, "gid", ElementGroup.Index())
-	}
-	return ElementNode
-}
-
-// CreateLinkXGML - создаёт элемент xgml - стрелка
-func CreateLinkXGML(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int) {
+// CreateElementEdge - создаёт элемент xgml - стрелка
+func CreateElementEdge(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int) {
 
 	//edge
 	ElementEdge := xml.AddSectionXML(ElementGraph, "edge")
@@ -164,8 +106,8 @@ func CreateLinkXGML(ElementGraph *etree.Element, IndexElementFrom, IndexElementT
 
 }
 
-// CreateLinkXGML - создаёт элемент xgml - стрелка синяя с заголовком
-func CreateLinkXGML_blue(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int, label string) {
+// CreateElementEdge_blue - создаёт элемент xgml - стрелка синяя с заголовком
+func CreateElementEdge_blue(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int, label string) {
 
 	Width := float64(findWidthEdge(label))
 	Height := float64(findHeightEdge(label))

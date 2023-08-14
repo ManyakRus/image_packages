@@ -6,6 +6,7 @@ import (
 	"github.com/ManyakRus/image_packages/internal/packages_folder"
 	"github.com/ManyakRus/image_packages/internal/parse_go"
 	"github.com/ManyakRus/image_packages/pkg/xgml"
+	"github.com/ManyakRus/image_packages/pkg/xml"
 	"github.com/ManyakRus/starter/folders"
 	"github.com/ManyakRus/starter/log"
 	"github.com/beevik/etree"
@@ -33,7 +34,7 @@ func StartFillAll(FileName string) {
 
 	//xgml.AddDirectory(buffer, FolderRoot.Name)
 
-	DocXML := xgml.CreateDocXGML()
+	DocXML := xml.CreateDocXGML()
 	ElementGraph := DocXML.FindElement("/section/section")
 
 	//заполним каталоги и пакеты
