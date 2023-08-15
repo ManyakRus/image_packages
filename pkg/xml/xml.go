@@ -5,25 +5,6 @@ import (
 	"strconv"
 )
 
-// CreateDocXGML - создаёт новый документ .xgml
-func CreateDocXGML() *etree.Document {
-
-	DocXML := etree.NewDocument()
-	DocXML.CreateProcInst("xml", `version="1.0" encoding="UTF-8"`)
-	//DocXML.IndentTabs()
-
-	ElementXGML := DocXML.CreateElement("section")
-	ElementXGML.CreateAttr("name", "xgml")
-
-	//ElementXGML := AddSectionXML(DocXML, "xgml")
-	ElementGraph := AddSectionXML(ElementXGML, "graph")
-	AddAttributeXML(ElementGraph, "hierarchic", "int", "1")
-
-	//log.Info("ElementGraph.GetPath(): ", ElementGraph.GetPath())
-
-	return DocXML
-}
-
 // AddSectionXML - добавляет секцию в xgml
 func AddSectionXML(Element *etree.Element, name string) *etree.Element {
 

@@ -6,7 +6,6 @@ import (
 	"github.com/ManyakRus/image_packages/internal/packages_folder"
 	"github.com/ManyakRus/image_packages/internal/parse_go"
 	"github.com/ManyakRus/image_packages/pkg/xgml"
-	"github.com/ManyakRus/image_packages/pkg/xml"
 	"github.com/ManyakRus/starter/folders"
 	"github.com/ManyakRus/starter/log"
 	"github.com/beevik/etree"
@@ -34,7 +33,7 @@ func StartFillAll(FileName string) {
 
 	//xgml.AddDirectory(buffer, FolderRoot.Name)
 
-	DocXML := xml.CreateDocXGML()
+	DocXML := xgml.CreateDocument()
 	ElementGraph := DocXML.FindElement("/section/section")
 
 	//заполним каталоги и пакеты
@@ -68,7 +67,7 @@ func FillLinks(ElementGraph *etree.Element) {
 				//log.Panic("MapPackagesElements[PackageImport] error: ok =false")
 				continue
 			}
-			xgml.CreateLinkXGML(ElementGraph, ElementFrom.Index(), ElementImport.Index())
+			xgml.CreateElement_Edge(ElementGraph, ElementFrom.Index(), ElementImport.Index())
 		}
 	}
 }
@@ -97,7 +96,7 @@ func FillLinks_goroutine(ElementGraph *etree.Element) {
 					ElementImport = ElementFrom
 				}
 				label := Go_func_name
-				xgml.CreateLinkXGML_blue(ElementGraph, ElementFrom.Index(), ElementImport.Index(), label)
+				xgml.CreateElement_Edge_blue(ElementGraph, ElementFrom.Index(), ElementImport.Index(), label)
 			}
 
 			//ElementImport, ok := MapPackageIDElements[PackageImport.ID]
@@ -106,7 +105,7 @@ func FillLinks_goroutine(ElementGraph *etree.Element) {
 			//	//log.Panic("MapPackagesElements[PackageImport] error: ok =false")
 			//	continue
 			//}
-			//xgml.CreateLinkXGML(ElementGraph, ElementFrom.Index(), ElementImport.Index())
+			//xgml.CreateElement_Edge(ElementGraph, ElementFrom.Index(), ElementImport.Index())
 		}
 	}
 }
@@ -138,10 +137,10 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 	}
 
 	//добавим группа (каталог)
-	ElementGroup = xgml.CreateGroupXGML(ElementGraph, ElementGroup, GroupName)
+	ElementGroup = xgml.CreateElement_Group(ElementGraph, ElementGroup, GroupName)
 	if PackageName != "" {
 		//добавим пакет(package)
-		ElementShape := xgml.CreateElementXGML_Shape(ElementGraph, ElementGroup, PackageName)
+		ElementShape := xgml.CreateElement_Shape(ElementGraph, ElementGroup, PackageName)
 		MapPackagesElements[PackageFolder1.Package] = ElementShape
 		MapPackageIDElements[PackageFolder1.Package.ID] = ElementShape
 		//MapPackagesElements[&PackageFolder1] = ElementShape

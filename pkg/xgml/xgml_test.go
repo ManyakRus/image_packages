@@ -1,23 +1,22 @@
 package xgml
 
 import (
-	"github.com/ManyakRus/image_packages/pkg/xml"
 	"github.com/ManyakRus/starter/micro"
 	"testing"
 )
 
 func TestCreateNewXGML(t *testing.T) {
 	dir := micro.ProgramDir()
-	DocXML := xml.CreateDocXGML()
+	DocXML := CreateDocument()
 	ElementGraph := DocXML.FindElement("/section/section")
 
-	Group1 := CreateGroupXGML(ElementGraph, nil, "GroupCaption1")
+	Group1 := CreateElement_Group(ElementGraph, nil, "GroupCaption1")
 
-	Element1 := CreateElementXGML_Shape(ElementGraph, Group1, "Entity1")
-	Element2 := CreateElementXGML_Shape(ElementGraph, nil, "Entity2")
-	CreateLinkXGML(ElementGraph, Element1.Index(), Element2.Index())
+	Element1 := CreateElement_Shape(ElementGraph, Group1, "Entity1")
+	Element2 := CreateElement_Shape(ElementGraph, nil, "Entity2")
+	CreateElement_Edge(ElementGraph, Element1.Index(), Element2.Index())
 
-	CreateLinkXGML_blue(ElementGraph, Element1.Index(), Element2.Index(), "test()")
+	CreateElement_Edge_blue(ElementGraph, Element1.Index(), Element2.Index(), "test()")
 
 	FileName := dir + "test" + micro.SeparatorFile() + "test.xgml"
 	//DocXML.IndentTabs()

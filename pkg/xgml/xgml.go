@@ -20,11 +20,11 @@ var FONT_SIZE_EDGE = 8
 
 //var doc = etree.NewDocument()
 
-// CreateElementXGML_Shape - создаёт элемент xgml - прямоугольник
-func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
+// CreateElement_Shape - создаёт элемент xgml - прямоугольник
+func CreateElement_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
 
-	Width := findWidthShape(ElementName)
-	Height := findHeightShape(ElementName)
+	Width := findWidth_Shape(ElementName)
+	Height := findHeight_Shape(ElementName)
 
 	//node
 	ElementNode := xml.AddSectionXML(ElementGraph, "node")
@@ -52,11 +52,11 @@ func CreateElementXGML_Shape(ElementGraph *etree.Element, ElementGroup *etree.El
 	return ElementNode
 }
 
-// CreateGroupXGML - создаёт элемент xgml - группа
-func CreateGroupXGML(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
+// CreateElement_Group - создаёт элемент xgml - группа
+func CreateElement_Group(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
 
-	Width := findWidthGroup(GroupCaption)
-	Height := findHeightGroup(GroupCaption)
+	Width := findWidth_Group(GroupCaption)
+	Height := findHeight_Group(GroupCaption)
 
 	//node
 	ElementNode := xml.AddSectionXML(ElementGraph, "node")
@@ -91,15 +91,15 @@ func CreateGroupXGML(ElementGraph, ElementGroup *etree.Element, GroupCaption str
 	return ElementNode
 }
 
-// CreateElementXGML_UML - создаёт элемент xgml - UML
-func CreateElementXGML_UML(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementId, ElementName string) *etree.Element {
+// CreateElement_UML - создаёт элемент xgml - UML
+func CreateElement_UML(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementId, ElementName string) *etree.Element {
 
 	if ElementId == "" {
 		ElementId = ElementName
 	}
 
-	Width := findWidthShape(ElementName)
-	Height := findHeightShape(ElementName)
+	Width := findWidth_Shape(ElementName)
+	Height := findHeight_Shape(ElementName)
 
 	//node
 	ElementNode := xml.AddSectionXML(ElementGraph, "node")
@@ -149,8 +149,8 @@ func CreateElementXGML_UML(ElementGraph *etree.Element, ElementGroup *etree.Elem
 	return ElementNode
 }
 
-// CreateLinkXGML - создаёт элемент xgml - стрелка
-func CreateLinkXGML(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int) {
+// CreateElement_Edge - создаёт элемент xgml - стрелка
+func CreateElement_Edge(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int) {
 
 	//edge
 	ElementEdge := xml.AddSectionXML(ElementGraph, "edge")
@@ -164,11 +164,11 @@ func CreateLinkXGML(ElementGraph *etree.Element, IndexElementFrom, IndexElementT
 
 }
 
-// CreateLinkXGML - создаёт элемент xgml - стрелка синяя с заголовком
-func CreateLinkXGML_blue(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int, label string) {
+// CreateElement_Edge_blue - создаёт элемент xgml - стрелка синяя с заголовком
+func CreateElement_Edge_blue(ElementGraph *etree.Element, IndexElementFrom, IndexElementTo int, label string) {
 
-	Width := float64(findWidthEdge(label))
-	Height := float64(findHeightEdge(label))
+	Width := float64(findWidth_Edge(label))
+	Height := float64(findHeight_Edge(label))
 
 	//edge
 	ElementEdge := xml.AddSectionXML(ElementGraph, "edge")
@@ -195,8 +195,8 @@ func CreateLinkXGML_blue(ElementGraph *etree.Element, IndexElementFrom, IndexEle
 
 }
 
-// findWidthShape - возвращает число - ширину элемента
-func findWidthShape(ElementName string) int {
+// findWidth_Shape - возвращает число - ширину элемента
+func findWidth_Shape(ElementName string) int {
 	Otvet := FONT_SIZE_SHAPE * 2
 
 	LenMax := findMaxLenRow(ElementName)
@@ -207,8 +207,8 @@ func findWidthShape(ElementName string) int {
 	return Otvet
 }
 
-// findHeightShape - возвращает число - высоту элемента
-func findHeightShape(ElementName string) int {
+// findHeight_Shape - возвращает число - высоту элемента
+func findHeight_Shape(ElementName string) int {
 
 	Otvet := 10 + FONT_SIZE_SHAPE*3
 
@@ -220,8 +220,8 @@ func findHeightShape(ElementName string) int {
 
 }
 
-// findWidthGroup - возвращает число - ширину элемента
-func findWidthGroup(ElementName string) int {
+// findWidth_Group - возвращает число - ширину элемента
+func findWidth_Group(ElementName string) int {
 	Otvet := 10
 
 	LenMax := findMaxLenRow(ElementName)
@@ -232,8 +232,8 @@ func findWidthGroup(ElementName string) int {
 	return Otvet
 }
 
-// findHeightGroup - возвращает число - высоту элемента
-func findHeightGroup(ElementName string) int {
+// findHeight_Group - возвращает число - высоту элемента
+func findHeight_Group(ElementName string) int {
 
 	Otvet := 30
 
@@ -245,8 +245,8 @@ func findHeightGroup(ElementName string) int {
 
 }
 
-// findWidthEdge - возвращает число - ширину элемента
-func findWidthEdge(Label string) int {
+// findWidth_Edge - возвращает число - ширину элемента
+func findWidth_Edge(Label string) int {
 	Otvet := 10
 
 	LenMax := findMaxLenRow(Label)
@@ -257,8 +257,8 @@ func findWidthEdge(Label string) int {
 	return Otvet
 }
 
-// findHeightEdge - возвращает число - высоту элемента
-func findHeightEdge(Label string) int {
+// findHeight_Edge - возвращает число - высоту элемента
+func findHeight_Edge(Label string) int {
 
 	Otvet := 30
 
@@ -293,4 +293,19 @@ func findMaxLenRow(ElementName string) int {
 	}
 
 	return Otvet
+}
+
+// CreateDocument - создаёт новый документ .xgml
+func CreateDocument() *etree.Document {
+
+	DocXML := etree.NewDocument()
+	DocXML.CreateProcInst("xml", `version="1.0" encoding="UTF-8"`)
+
+	ElementXGML := DocXML.CreateElement("section")
+	ElementXGML.CreateAttr("name", "xgml")
+
+	ElementGraph := xml.AddSectionXML(ElementXGML, "graph")
+	xml.AddAttributeXML(ElementGraph, "hierarchic", "int", "1")
+
+	return DocXML
 }

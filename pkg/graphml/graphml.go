@@ -236,3 +236,81 @@ func findMaxLenRow(ElementName string) int {
 
 	return Otvet
 }
+
+// CreateDocument - создаёт новый документ .xgml
+func CreateDocument() *etree.Document {
+
+	DocXML := etree.NewDocument()
+	DocXML.CreateProcInst("xml", `version="1.0" encoding="UTF-8" standalone="no"`)
+
+	ElementGraphMl := DocXML.CreateElement("graphml")
+	ElementGraphMl.CreateAttr("xmlns", "http://graphml.graphdrawing.org/xmlns")
+	ElementGraphMl.CreateAttr("xmlns:java", "http://www.yworks.com/xml/yfiles-common/1.0/java")
+	ElementGraphMl.CreateAttr("xmlns:sys", "http://www.yworks.com/xml/yfiles-common/markup/primitives/2.0")
+	ElementGraphMl.CreateAttr("xmlns:x", "http://www.yworks.com/xml/yfiles-common/markup/2.0")
+	ElementGraphMl.CreateAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance")
+	ElementGraphMl.CreateAttr("xmlns:y", "http://www.yworks.com/xml/graphml")
+	ElementGraphMl.CreateAttr("xmlns:y", "http://www.yworks.com/xml/graphml")
+	ElementGraphMl.CreateAttr("xmlns:yed", "http://www.yworks.com/xml/yed/3")
+	ElementGraphMl.CreateAttr("xsi:schemaLocation", "http://graphml.graphdrawing.org/xmlns http://www.yworks.com/xml/schema/graphml/1.1/ygraphml.xsd")
+
+	ElementD0 := ElementGraphMl.CreateElement("key")
+	ElementD0.CreateAttr("for", "port")
+	ElementD0.CreateAttr("id", "d0")
+	ElementD0.CreateAttr("yfiles.type", "portgraphics")
+
+	ElementD1 := ElementGraphMl.CreateElement("key")
+	ElementD1.CreateAttr("for", "port")
+	ElementD1.CreateAttr("id", "d1")
+	ElementD1.CreateAttr("yfiles.type", "portgeometry")
+
+	ElementD2 := ElementGraphMl.CreateElement("key")
+	ElementD2.CreateAttr("for", "port")
+	ElementD2.CreateAttr("id", "d2")
+	ElementD2.CreateAttr("yfiles.type", "portuserdata")
+
+	ElementD3 := ElementGraphMl.CreateElement("key")
+	ElementD3.CreateAttr("attr.name", "url")
+	ElementD3.CreateAttr("attr.type", "string")
+	ElementD3.CreateAttr("for", "node")
+	ElementD3.CreateAttr("id", "d3")
+
+	ElementD4 := ElementGraphMl.CreateElement("key")
+	ElementD4.CreateAttr("attr.name", "description")
+	ElementD4.CreateAttr("attr.type", "string")
+	ElementD4.CreateAttr("for", "node")
+	ElementD4.CreateAttr("id", "d4")
+
+	ElementD5 := ElementGraphMl.CreateElement("key")
+	ElementD5.CreateAttr("for", "node")
+	ElementD5.CreateAttr("id", "d5")
+	ElementD5.CreateAttr("yfiles.type", "nodegraphics")
+
+	ElementD6 := ElementGraphMl.CreateElement("key")
+	ElementD6.CreateAttr("for", "graphml")
+	ElementD6.CreateAttr("id", "d6")
+	ElementD6.CreateAttr("yfiles.type", "resources")
+
+	ElementD7 := ElementGraphMl.CreateElement("key")
+	ElementD7.CreateAttr("attr.name", "url")
+	ElementD7.CreateAttr("attr.type", "string")
+	ElementD7.CreateAttr("for", "edge")
+	ElementD7.CreateAttr("id", "d7")
+
+	ElementD8 := ElementGraphMl.CreateElement("key")
+	ElementD8.CreateAttr("attr.name", "description")
+	ElementD8.CreateAttr("attr.type", "string")
+	ElementD8.CreateAttr("for", "edge")
+	ElementD8.CreateAttr("id", "d8")
+
+	ElementD9 := ElementGraphMl.CreateElement("key")
+	ElementD9.CreateAttr("for", "edge")
+	ElementD9.CreateAttr("id", "d9")
+	ElementD9.CreateAttr("yfiles.type", "edgegraphics")
+
+	ElementGraph := ElementGraphMl.CreateElement("graph")
+	ElementGraph.CreateAttr("edgedefault", "directed")
+	ElementGraph.CreateAttr("id", "G")
+
+	return DocXML
+}
