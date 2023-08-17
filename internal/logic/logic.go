@@ -178,6 +178,14 @@ func FindLinesCount_package(Package1 *packages.Package) (int, int) {
 	LinesCount := 0
 	FuncCount := 0
 
+	if Package1 == nil {
+		return 0, 0
+	}
+
+	if Package1.GoFiles == nil {
+		return 0, 0
+	}
+
 	for _, s := range Package1.GoFiles {
 		count, func_count := FindLinesCount(s)
 		LinesCount = LinesCount + count

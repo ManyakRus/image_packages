@@ -1,6 +1,7 @@
 package graphml
 
 import (
+	"fmt"
 	"github.com/ManyakRus/image_packages/pkg/xml"
 	"github.com/beevik/etree"
 	_ "github.com/beevik/etree"
@@ -25,29 +26,84 @@ func CreateElement_Shape(ElementGraph *etree.Element, ElementGroup *etree.Elemen
 
 	Width := findWidth_Shape(ElementName)
 	Height := findHeight_Shape(ElementName)
+	sWidth := fmt.Sprintf("%.1f", Width)
+	sHeight := fmt.Sprintf("%.1f", Height)
+
+	sFontSize := strconv.Itoa(FONT_SIZE_SHAPE)
 
 	//node
-	ElementNode := xml.AddSectionXML(ElementGraph, "node")
-	xml.AddAttributeXML(ElementNode, "id", "int", strconv.Itoa(ElementNode.Index()))
-	xml.AddAttributeXML(ElementNode, "label", "string", ElementName)
+	ElementNode := ElementGraph.CreateElement("node")
+	ElementGraph.CreateAttr("id", strconv.Itoa(ElementNode.Index()))
 
-	//graphics
-	ElementGraphics := xml.AddSectionXML(ElementNode, "graphics")
-	xml.AddAttributeXML(ElementGraphics, "type", "string", "rectangle")
-	xml.AddAttributeXML(ElementGraphics, "fill", "string", "#FFFFFF") //было #FFCC00
-	xml.AddAttributeXML(ElementGraphics, "outline", "string", "#000000")
-	xml.AddAttributeXML(ElementGraphics, "h", "double", strconv.Itoa(Height))
-	xml.AddAttributeXML(ElementGraphics, "w", "double", strconv.Itoa(Width))
+	//data
+	ElementData := ElementGraph.CreateElement("data")
+	ElementData.CreateAttr("key", "d5")
 
-	//LabelGraphics
-	ElementLabelGraphics := xml.AddSectionXML(ElementNode, "LabelGraphics")
-	xml.AddAttributeXML(ElementLabelGraphics, "text", "String", ElementName)
-	xml.AddAttributeXML(ElementLabelGraphics, "fontSize", "int", strconv.Itoa(FONT_SIZE_SHAPE))
+	//ShapeNode
+	ElementShapeNode := ElementData.CreateElement("ShapeNode")
 
-	//group
-	if ElementGroup != nil {
-		xml.AddAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
-	}
+	//YGeometry
+	ElementYGeometry := ElementShapeNode.CreateElement("y:Geometry")
+	ElementYGeometry.CreateAttr("height", sHeight)
+	ElementYGeometry.CreateAttr("width", sWidth)
+	ElementYGeometry.CreateAttr("x", "0.0")
+	ElementYGeometry.CreateAttr("y", "0.0")
+
+	//YFill
+	ElementYFill := ElementShapeNode.CreateElement("y:Fill")
+	ElementYFill.CreateAttr("color", "#FFFFFF")
+	ElementYFill.CreateAttr("transparent", "false")
+
+	//BorderStyle
+	ElementBorderStyle := ElementShapeNode.CreateElement("BorderStyle")
+	ElementBorderStyle.CreateAttr("color", "#000000")
+	ElementBorderStyle.CreateAttr("type", "line")
+	ElementBorderStyle.CreateAttr("width", "1.0")
+
+	//NodeLabel
+	ElementNodeLabel := ElementShapeNode.CreateElement("NodeLabel")
+	ElementNodeLabel.CreateAttr("alignment", "center")
+	ElementNodeLabel.CreateAttr("autoSizePolicy", "content")
+	ElementNodeLabel.CreateAttr("fontFamily", "Dialog")
+	ElementNodeLabel.CreateAttr("fontSize", sFontSize)
+	ElementNodeLabel.CreateAttr("fontStyle", "plain")
+	ElementNodeLabel.CreateAttr("hasBackgroundColor", "false")
+	ElementNodeLabel.CreateAttr("hasLineColor", "false")
+	ElementNodeLabel.CreateAttr("height", sHeight)
+	ElementNodeLabel.CreateAttr("horizontalTextPosition", "center")
+	ElementNodeLabel.CreateAttr("iconTextGap", "4")
+	ElementNodeLabel.CreateAttr("modelName", "internal")
+	ElementNodeLabel.CreateAttr("modelPosition", "c")
+	ElementNodeLabel.CreateAttr("textColor", "#000000")
+	ElementNodeLabel.CreateAttr("verticalTextPosition", "bottom")
+	ElementNodeLabel.CreateAttr("visible", "true")
+	ElementNodeLabel.CreateAttr("width", sWidth)
+	ElementNodeLabel.CreateAttr("x", "0.0")
+	ElementNodeLabel.CreateAttr("xml:space", "preserve")
+	ElementNodeLabel.CreateAttr("y", "0.0")
+
+	////node
+	//ElementNode := xml.AddSectionXML(ElementGraph, "node")
+	//xml.AddAttributeXML(ElementNode, "id", "int", strconv.Itoa(ElementNode.Index()))
+	//xml.AddAttributeXML(ElementNode, "label", "string", ElementName)
+	//
+	////graphics
+	//ElementGraphics := xml.AddSectionXML(ElementNode, "graphics")
+	//xml.AddAttributeXML(ElementGraphics, "type", "string", "rectangle")
+	//xml.AddAttributeXML(ElementGraphics, "fill", "string", "#FFFFFF") //было #FFCC00
+	//xml.AddAttributeXML(ElementGraphics, "outline", "string", "#000000")
+	//xml.AddAttributeXML(ElementGraphics, "h", "double", strconv.Itoa(Height))
+	//xml.AddAttributeXML(ElementGraphics, "w", "double", strconv.Itoa(Width))
+	//
+	////LabelGraphics
+	//ElementLabelGraphics := xml.AddSectionXML(ElementNode, "LabelGraphics")
+	//xml.AddAttributeXML(ElementLabelGraphics, "text", "String", ElementName)
+	//xml.AddAttributeXML(ElementLabelGraphics, "fontSize", "int", strconv.Itoa(FONT_SIZE_SHAPE))
+	//
+	////group
+	//if ElementGroup != nil {
+	//	xml.AddAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
+	//}
 
 	return ElementNode
 }
