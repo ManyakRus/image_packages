@@ -22,7 +22,7 @@ var FONT_SIZE_EDGE = 8
 //var doc = etree.NewDocument()
 
 // CreateElement_Shape - создаёт элемент xgml - прямоугольник
-func CreateElement_Shape(ElementGraph *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
+func CreateElement_Shape(ElementGraph0 *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
 
 	Width := findWidth_Shape(ElementName)
 	Height := findHeight_Shape(ElementName)
@@ -31,9 +31,18 @@ func CreateElement_Shape(ElementGraph *etree.Element, ElementGroup *etree.Elemen
 
 	sFontSize := strconv.Itoa(FONT_SIZE_SHAPE)
 
+	//ищем graph
+	var ElementGraph *etree.Element
+	ElementGraph2 := ElementGraph0.SelectElement("graph")
+	if ElementGraph2 != nil {
+		ElementGraph = ElementGraph2
+	} else {
+		ElementGraph = ElementGraph0
+	}
+
 	//node
 	ElementNode := ElementGraph.CreateElement("node")
-	ElementNode.CreateAttr("id", strconv.Itoa(ElementNode.Index()))
+	ElementNode.CreateAttr("id", "n"+strconv.Itoa(ElementNode.Index()))
 
 	//data
 	ElementData := ElementNode.CreateElement("data")
@@ -100,7 +109,8 @@ func CreateElement_Group(ElementGraph, ElementGroup *etree.Element, GroupCaption
 
 	//node
 	ElementNode := ElementGraph.CreateElement("node")
-	ElementNode.CreateAttr("id", strconv.Itoa(ElementNode.Index()))
+	NodeId := "n" + strconv.Itoa(ElementNode.Index())
+	ElementNode.CreateAttr("id", NodeId+"::"+NodeId)
 	ElementNode.CreateAttr("yfiles.foldertype", "group")
 
 	//data
@@ -108,11 +118,13 @@ func CreateElement_Group(ElementGraph, ElementGroup *etree.Element, GroupCaption
 	ElementData.CreateAttr("key", "d5")
 
 	//YProxyAutoBoundsNode
-	ElementYProxyAutoBoundsNode := ElementNode.CreateElement("y:ProxyAutoBoundsNode")
+	ElementYProxyAutoBoundsNode := ElementData.CreateElement("y:ProxyAutoBoundsNode")
 
 	//YRealizers
 	ElementYRealizers := ElementYProxyAutoBoundsNode.CreateElement("y:Realizers")
 	ElementYRealizers.CreateAttr("active", "0")
+
+	//----------------------- visible ---------------------------------------------
 
 	//YGroupNode
 	ElementYGroupNode := ElementYRealizers.CreateElement("y:GroupNode")
@@ -191,35 +203,91 @@ func CreateElement_Group(ElementGraph, ElementGroup *etree.Element, GroupCaption
 	ElementYBorderInsets.CreateAttr("top", "0")
 	ElementYBorderInsets.CreateAttr("topF", "0.0")
 
-	////node
-	//ElementNode := xml.AddSectionXML(ElementGraph, "node")
-	//xml.AddAttributeXML_int(ElementNode, "id", ElementNode.Index())
-	//xml.AddAttributeXML(ElementNode, "label", "string", GroupCaption)
-	//xml.AddAttributeXML(ElementNode, "isGroup", "boolean", "true")
-	//
-	////graphics
-	//ElementGraphics := xml.AddSectionXML(ElementNode, "graphics")
-	//xml.AddAttributeXML(ElementGraphics, "type", "string", "roundrectangle")
-	//xml.AddAttributeXML(ElementGraphics, "fill", "string", "#F5F5F5")
-	//xml.AddAttributeXML(ElementGraphics, "outline", "string", "#F5F5F5")
-	//xml.AddAttributeXML_double(ElementGraphics, "h", float64(Height))
-	//xml.AddAttributeXML_double(ElementGraphics, "w", float64(Width))
-	//
-	////LabelGraphics
-	//ElementLabelGraphics := xml.AddSectionXML(ElementNode, "LabelGraphics")
-	//xml.AddAttributeXML(ElementLabelGraphics, "text", "String", GroupCaption)
-	//xml.AddAttributeXML(ElementLabelGraphics, "fill", "String", "#EBEBEB")
-	//xml.AddAttributeXML(ElementLabelGraphics, "fontSize", "int", strconv.Itoa(FONT_SIZE_GROUP))
-	//xml.AddAttributeXML(ElementLabelGraphics, "anchor", "String", "n")
-	//xml.AddAttributeXML_double(ElementLabelGraphics, "borderDistance", 0)
-	//xml.AddAttributeXML_double(ElementLabelGraphics, "leftBorderInset", 50)
-	//xml.AddAttributeXML_double(ElementLabelGraphics, "rightBorderInset", 50)
-	//xml.AddAttributeXML_string(ElementLabelGraphics, "model", "sandwich")
-	//
-	////group
-	//if ElementGroup != nil {
-	//	xml.AddAttributeXML_int(ElementNode, "gid", ElementGroup.Index())
-	//}
+	//----------------------- not visible ---------------------------------------------
+
+	//YGroupNode
+	ElementYGroupNode2 := ElementYRealizers.CreateElement("y:GroupNode")
+
+	//YGeometry
+	ElementYGeometry2 := ElementYGroupNode2.CreateElement("y:Geometry")
+	ElementYGeometry2.CreateAttr("height", sHeight)
+	ElementYGeometry2.CreateAttr("width", sWidth)
+	ElementYGeometry2.CreateAttr("x", "0.0")
+	ElementYGeometry2.CreateAttr("y", "0.0")
+
+	//YFill
+	ElementYFill2 := ElementYGroupNode2.CreateElement("y:Fill")
+	ElementYFill2.CreateAttr("color", "#F5F5F5")
+	ElementYFill2.CreateAttr("transparent", "false")
+
+	//YBorderStyle
+	ElementYBorderStyle2 := ElementYGroupNode2.CreateElement("y:BorderStyle")
+	ElementYBorderStyle2.CreateAttr("color", "#000000")
+	ElementYBorderStyle2.CreateAttr("type", "dashed")
+	ElementYBorderStyle2.CreateAttr("width", "1.0")
+
+	//YNodeLabel
+	ElementYNodeLabel2 := ElementYGroupNode2.CreateElement("y:NodeLabel")
+	ElementYNodeLabel2.CreateAttr("alignment", "right")
+	ElementYNodeLabel2.CreateAttr("autoSizePolicy", "content")
+	ElementYNodeLabel2.CreateAttr("backgroundColor", "#EBEBEB")
+	ElementYNodeLabel2.CreateAttr("borderDistance", "0.0")
+	ElementYNodeLabel2.CreateAttr("fontFamily", "Dialog")
+	ElementYNodeLabel2.CreateAttr("fontSize", strconv.Itoa(FONT_SIZE_GROUP))
+	ElementYNodeLabel2.CreateAttr("fontStyle", "plain")
+	ElementYNodeLabel2.CreateAttr("hasLineColor", "false")
+	ElementYNodeLabel2.CreateAttr("hasText", "false") //только у 2
+	ElementYNodeLabel2.CreateAttr("height", sHeight)
+	ElementYNodeLabel2.CreateAttr("horizontalTextPosition", "center")
+	ElementYNodeLabel2.CreateAttr("iconTextGap", "4")
+	ElementYNodeLabel2.CreateAttr("modelName", "sandwich")
+	ElementYNodeLabel2.CreateAttr("modelPosition", "n")
+	ElementYNodeLabel2.CreateAttr("textColor", "#000000")
+	ElementYNodeLabel2.CreateAttr("verticalTextPosition", "bottom")
+	ElementYNodeLabel2.CreateAttr("width", sWidth)
+	ElementYNodeLabel2.CreateAttr("x", "0")
+	//ElementYNodeLabel2.CreateAttr("xml:space", "preserve") //только у 2
+	ElementYNodeLabel2.CreateAttr("y", "0")
+	//ElementYNodeLabel2.CreateText(GroupCaption) //только у 2
+
+	//YShape
+	ElementYShape2 := ElementYGroupNode2.CreateElement("y:Shape")
+	ElementYShape2.CreateAttr("type", "roundrectangle")
+
+	//YState
+	ElementYState2 := ElementYGroupNode2.CreateElement("y:State")
+	ElementYState2.CreateAttr("closed", "true")
+	ElementYState2.CreateAttr("closedHeight", "80.0")
+	ElementYState2.CreateAttr("closedWidth", "100.0")
+	ElementYState2.CreateAttr("innerGraphDisplayEnabled", "false")
+
+	//YInsets
+	ElementYInsets2 := ElementYGroupNode2.CreateElement("y:Insets")
+	ElementYInsets2.CreateAttr("bottom", "15")
+	ElementYInsets2.CreateAttr("bottomF", "15.0")
+	ElementYInsets2.CreateAttr("left", "15")
+	ElementYInsets2.CreateAttr("leftF", "15.0")
+	ElementYInsets2.CreateAttr("right", "15")
+	ElementYInsets2.CreateAttr("rightF", "15.0")
+	ElementYInsets2.CreateAttr("top", "15")
+	ElementYInsets2.CreateAttr("topF", "15.0")
+
+	//YBorderInsets
+	ElementYBorderInsets2 := ElementYGroupNode2.CreateElement("y:BorderInsets")
+	ElementYBorderInsets2.CreateAttr("bottom", "54")
+	ElementYBorderInsets2.CreateAttr("bottomF", "54.0")
+	ElementYBorderInsets2.CreateAttr("left", "0")
+	ElementYBorderInsets2.CreateAttr("leftF", "0.0")
+	ElementYBorderInsets2.CreateAttr("right", "23")
+	ElementYBorderInsets2.CreateAttr("rightF", "23.35")
+	ElementYBorderInsets2.CreateAttr("top", "0")
+	ElementYBorderInsets2.CreateAttr("topF", "0.0")
+
+	//----------------------- продолжение ---------------------------------------------
+	//YBorderInsets
+	ElementGraphGraph := ElementNode.CreateElement("graph")
+	ElementGraphGraph.CreateAttr("edgedefault", "directed")
+	ElementGraphGraph.CreateAttr("id", NodeId+":")
 
 	return ElementNode
 }
