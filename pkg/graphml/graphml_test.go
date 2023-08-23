@@ -19,9 +19,14 @@ func TestCreateNewGraphml(t *testing.T) {
 	//
 	//Element1 := CreateElement_Shape(ElementGraph, Group1, "Entity1")
 	Shape1 := CreateElement_Shape(Group1, nil, "Shape1")
-	CreateElement_Edge(ElementGraph, Shape1.Index(), Shape2.Index(), "edge1")
+	CreateElement_Edge(ElementGraph, Shape1, Shape2, "edge1", "descr")
+	CreateElement_Edge_blue(ElementGraph, Shape2, Shape1, "edge2", "descr2")
 	//
 	//CreateElement_Edge_blue(ElementGraph, Element1.Index(), Element2.Index(), "test()")
+
+	if Shape1 == nil || Shape2 == nil {
+
+	}
 
 	FileName := dir + "test" + micro.SeparatorFile() + "test.graphml"
 	//DocXML.IndentTabs()
