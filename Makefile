@@ -40,14 +40,10 @@ run.test:
 	go fmt ./...
 	go test -coverprofile cover.out ./internal/v0/app/...
 	go tool cover -func=cover.out
-graph:
-	goda graph -f "{{.Package.Name}}" "shared($(SERVICEURL)/... $(SERVICEURL2)/...)" | dot -Tsvg -o graph.svg
-dot:
-	goda graph -f "{{.Package.Name}}" "shared($(SERVICEURL)/... $(SERVICEURL2)/...)" >graph.dot
 newrepo:
 	sed -i 's+$(SERVICEURL)+$(NEW_REPO)+g' go.mod
 	find -name *.go -not -path "*/vendor/*"|xargs sed -i 's+$(SERVICEURL)+$(NEW_REPO)+g'
-xgml:
+graph:
 	clear
-	image_packages ./ docs/packages.xgml
+	image_packages ./ docs/packages.graphml
 

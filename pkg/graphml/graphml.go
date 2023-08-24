@@ -21,7 +21,7 @@ var FONT_SIZE_EDGE = 8
 //var doc = etree.NewDocument()
 
 // CreateElement_Shape - создаёт элемент xgml - прямоугольник
-func CreateElement_Shape(ElementGraph0 *etree.Element, ElementGroup *etree.Element, ElementName string) *etree.Element {
+func CreateElement_Shape(ElementGraph0 *etree.Element, ElementName string) *etree.Element {
 
 	Width := findWidth_Shape(ElementName)
 	Height := findHeight_Shape(ElementName)
@@ -101,12 +101,21 @@ func CreateElement_Shape(ElementGraph0 *etree.Element, ElementGroup *etree.Eleme
 }
 
 // CreateElement_Group - создаёт элемент xgml - группа
-func CreateElement_Group(ElementGraph, ElementGroup *etree.Element, GroupCaption string) *etree.Element {
+func CreateElement_Group(ElementGraph0 *etree.Element, GroupCaption string) *etree.Element {
 
 	Width := findWidth_Group(GroupCaption)
 	Height := findHeight_Group(GroupCaption)
 	sWidth := fmt.Sprintf("%.1f", float32(Width))
 	sHeight := fmt.Sprintf("%.1f", float32(Height))
+
+	//ищем graph
+	var ElementGraph *etree.Element
+	ElementGraph2 := ElementGraph0.SelectElement("graph")
+	if ElementGraph2 != nil {
+		ElementGraph = ElementGraph2
+	} else {
+		ElementGraph = ElementGraph0
+	}
 
 	//node
 	ElementNode := ElementGraph.CreateElement("node")

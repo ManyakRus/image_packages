@@ -12,13 +12,13 @@ func TestCreateNewGraphml(t *testing.T) {
 
 	}
 
-	Shape2 := CreateElement_Shape(ElementGraph, nil, "Shape2")
+	Shape2 := CreateElement_Shape(ElementGraph, "Shape2")
 	//ElementGraph := DocXML.FindElement("/section/section")
 	//
-	Group1 := CreateElement_Group(ElementGraph, nil, "Group1")
+	Group1 := CreateElement_Group(ElementGraph, "Group1")
 	//
 	//Element1 := CreateElement_Shape(ElementGraph, Group1, "Entity1")
-	Shape1 := CreateElement_Shape(Group1, nil, "Shape1")
+	Shape1 := CreateElement_Shape(Group1, "Shape1")
 	CreateElement_Edge(ElementGraph, Shape1, Shape2, "edge1", "descr")
 	CreateElement_Edge_blue(ElementGraph, Shape2, Shape1, "edge2", "descr2")
 	//
