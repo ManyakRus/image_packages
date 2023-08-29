@@ -1,5 +1,5 @@
-SERVICEURL=github.com/ManyakRus/image_packages
-SERVICEURL2=github.com/ManyakRus/image_packages
+SERVICENAME=image_packages
+SERVICEURL=github.com/ManyakRus/$(SERVICENAME)
 
 FILEMAIN=./internal/main.go
 FILEAPP=./bin/image_packages
@@ -47,3 +47,6 @@ graph:
 	clear
 	image_packages ./ docs/packages.graphml
 
+conn:
+	clear
+	image_connections ./internal docs/connections.graphml $(SERVICENAME)
