@@ -576,7 +576,7 @@ func findHeight_Edge(Label string) int {
 func countLines(s string) int {
 	Otvet := 0
 
-	strings.Count(s, "/n")
+	strings.Count(s, "\n")
 
 	return Otvet
 }
