@@ -77,11 +77,17 @@ func FillLinks(ElementGraph *etree.Element) {
 			ElementImport, ok := MapPackageIDElements[PackageImport.ID]
 			if ok == false {
 				//посторонние импорты
-				//log.Panic("MapPackagesElements[PackageImport] error: ok =false")
 				continue
 			}
 			descr := PackageFrom.Name + " -> " + PackageImport.Name
-			graphml.CreateElement_Edge(ElementGraph, ElementFrom, ElementImport, "", descr)
+			call_count := FindModuleFuncCallCount(PackageFrom, PackageImport)
+			if call_count > 0 {
+				//линия
+				graphml.CreateElement_Edge(ElementGraph, ElementFrom, ElementImport, "", descr)
+			} else {
+				//пунктиром
+				graphml.CreateElement_Edge_dotted(ElementGraph, ElementFrom, ElementImport, "", descr)
+			}
 		}
 	}
 }
@@ -114,15 +120,47 @@ func FillLinks_goroutine(ElementGraph *etree.Element) {
 				graphml.CreateElement_Edge_blue(ElementGraph, ElementFrom, ElementImport, label, descr)
 			}
 
-			//ElementImport, ok := MapPackageIDElements[PackageImport.ID]
-			//if ok == false {
-			//	//посторонние импорты
-			//	//log.Panic("MapPackagesElements[PackageImport] error: ok =false")
-			//	continue
-			//}
-			//graphml.CreateElement_Edge(ElementGraph, ElementFrom.Index(), ElementImport.Index())
 		}
 	}
+}
+
+// FindModuleFuncCallCount - находит количество вызовов функций нужного модуля
+func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
+	Otvet := 0
+
+	PackageTo_ID := PackageTo.ID
+
+	for _, Filename1 := range PackageFrom.GoFiles {
+
+		AstFile, err := parse_go.ParseFile(Filename1)
+		if err != nil {
+			log.Warn("ParseFile() ", Filename1, " error: ", err)
+			continue
+		}
+
+		MassGoImport := parse_go.FindFunctions(AstFile)
+		for _, GoImport1 := range MassGoImport {
+			//	//Go_package_name := GoImport1.Go_package_name
+			Go_package_import := GoImport1.Go_package_import
+			if Go_package_import == PackageTo_ID {
+				Otvet = Otvet + 1
+			}
+			//	Go_func_name := GoImport1.Go_func_name
+			//
+			//	ElementImport, ok := MapPackageIDElements[Go_package_import]
+			//	if ok == false {
+			//		//посторонние импорты
+			//		//continue
+			//		ElementImport = ElementFrom
+			//	}
+			//	label := Go_func_name
+			//	descr := PackageFrom.Name + " -> " + GoImport1.Go_package_name
+			//	graphml.CreateElement_Edge_blue(ElementGraph, ElementFrom, ElementImport, label, descr)
+		}
+
+	}
+
+	return Otvet
 }
 
 func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folder) {

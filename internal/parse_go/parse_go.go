@@ -107,6 +107,187 @@ func FindGo(AstFile *ast.File) []GoImport {
 	return Otvet
 }
 
+func FindGoImport_fromFunc(AstFile *ast.File, SelectorExpr1 *ast.SelectorExpr) GoImport {
+	Otvet := GoImport{}
+
+	switch SelectorExpr1.X.(type) {
+	case *ast.Ident:
+		{
+			Ident_X := SelectorExpr1.X.(*ast.Ident)
+			Ident_Sel := SelectorExpr1.Sel
+
+			go_package_name := Ident_X.Name
+			go_func_name := Ident_Sel.Name
+			go_package_import := FindPackageImport_FromName(AstFile, go_package_name)
+
+			//GoImport1 := GoImport{}
+			Otvet.Go_package_name = go_package_name
+			Otvet.Go_package_import = go_package_import
+			Otvet.Go_func_name = go_func_name
+			//Otvet = append(Otvet, GoImport1)
+		}
+	case *ast.CallExpr:
+		{
+			CallExpr2 := SelectorExpr1.X.(*ast.CallExpr)
+			switch CallExpr2.Fun.(type) {
+			case *ast.SelectorExpr:
+				{
+					SelectorExpr2 := CallExpr2.Fun.(*ast.SelectorExpr)
+					Otvet = FindGoImport_fromFunc(AstFile, SelectorExpr2)
+				}
+			}
+		}
+	default:
+		{
+			//log.Warnf("%#v", SelectorExpr1.X)
+		}
+	}
+
+	return Otvet
+}
+
+// FindFunctions - находит массив команд go (горутины)
+func FindFunctions(AstFile *ast.File) []GoImport {
+	Otvet := make([]GoImport, 0)
+
+	if AstFile == nil {
+		return Otvet
+	}
+
+	//parseFuncNode := func(node1 ast.Node) bool {
+	//	switch node1.(type) {
+	//	case *ast.FuncDecl:
+	//		func1 := node1.(*ast.FuncDecl)
+	//		body := func1.Body
+	//		if body == nil {
+	//			return true
+	//		}
+	//		for _, list1 := range body.List {
+	//			switch list1.(type) {
+	//			case *ast.ExprStmt:
+	//				{
+	//					ExprStmt1 := list1.(*ast.ExprStmt)
+	//					switch ExprStmt1.X.(type) {
+	//					case (*ast.CallExpr):
+	//						CallExpr1 := ExprStmt1.X.(*ast.CallExpr)
+	//						switch CallExpr1.Fun.(type) {
+	//						case *ast.SelectorExpr:
+	//							{
+	//								SelectorExpr1 := CallExpr1.Fun.(*ast.SelectorExpr)
+	//								GoImport1 := FindGoImport_fromFunc(AstFile, SelectorExpr1)
+	//								Otvet = append(Otvet, GoImport1)
+	//								//switch SelectorExpr1.X.(type) {
+	//								//case *ast.Ident:
+	//								//	{
+	//								//		Ident_X := SelectorExpr1.X.(*ast.Ident)
+	//								//		Ident_Sel := SelectorExpr1.Sel
+	//								//
+	//								//		go_package_name := Ident_X.Name
+	//								//		go_func_name := Ident_Sel.Name
+	//								//		go_package_import := FindPackageImport_FromName(AstFile, go_package_name)
+	//								//
+	//								//		GoImport1 := GoImport{}
+	//								//		GoImport1.Go_package_name = go_package_name
+	//								//		GoImport1.Go_package_import = go_package_import
+	//								//		GoImport1.Go_func_name = go_func_name
+	//								//		Otvet = append(Otvet, GoImport1)
+	//								//	}
+	//								//}
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//	return true
+	//}
+
+	//ast.Inspect(AstFile, parseFuncNode)
+
+	//for _, decl1 := range AstFile.Decls {
+	//	switch decl1.(type) {
+	//	case *ast.FuncDecl:
+	//		{
+	//			func1 := decl1.(*ast.FuncDecl)
+	//			body := func1.Body
+	//			if body == nil {
+	//				continue
+	//			}
+	//			for _, list1 := range body.List {
+	//				switch list1.(type) {
+	//				case *ast.ExprStmt:
+	//					{
+	//						ExprStmt1 := list1.(*ast.ExprStmt)
+	//						switch ExprStmt1.X.(type) {
+	//						case (*ast.CallExpr):
+	//							CallExpr1 := ExprStmt1.X.(*ast.CallExpr)
+	//							switch CallExpr1.Fun.(type) {
+	//							case *ast.SelectorExpr:
+	//								{
+	//									SelectorExpr1 := CallExpr1.Fun.(*ast.SelectorExpr)
+	//									GoImport1 := FindGoImport_fromFunc(AstFile, SelectorExpr1)
+	//									Otvet = append(Otvet, GoImport1)
+	//								}
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+
+	fset := token.NewFileSet()
+	visitor := &Visitor{fset: fset}
+	visitor.MassGoImport = make([]GoImport, 0)
+	visitor.AstFile = AstFile
+	ast.Walk(visitor, AstFile)
+
+	return visitor.MassGoImport
+}
+
+type Visitor struct {
+	fset         *token.FileSet
+	MassGoImport []GoImport
+	AstFile      *ast.File
+}
+
+func (v *Visitor) Visit(n ast.Node) ast.Visitor {
+	if n == nil {
+		return nil
+	}
+
+	var SelectorExpr1 *ast.SelectorExpr
+
+	switch x := n.(type) {
+	case *ast.CallExpr:
+		var ok bool
+		SelectorExpr1, ok = x.Fun.(*ast.SelectorExpr)
+		if ok == false {
+			return v
+		}
+	default:
+		return v
+	}
+
+	GoImport1 := FindGoImport_fromFunc(v.AstFile, SelectorExpr1)
+	v.MassGoImport = append(v.MassGoImport, GoImport1)
+
+	return v
+}
+
+//// parseFuncNode - возвращает Истина если это функция
+//func parseFuncNode(n ast.Node) bool {
+//	Otvet := true
+//
+//	switch n.(type) {
+//	case *ast.FuncDecl:
+//	}
+//
+//	return Otvet
+//}
+
 func FindGoValues(AstFile *ast.File, GoStmt1 *ast.GoStmt) (go_package_name, go_package_import, go_func_name string) {
 
 	iFunc1 := GoStmt1.Call.Fun
@@ -185,3 +366,41 @@ func DeleteQuotes(s string) string {
 
 	return Otvet
 }
+
+//// FindFunctions - находит массив функций go
+//func FindFunctions(AstFile *ast.File) []GoImport {
+//	Otvet := make([]GoImport, 0)
+//
+//	if AstFile == nil {
+//		return Otvet
+//	}
+//
+//	for _, decl1 := range AstFile.Decls {
+//		switch decl1.(type) {
+//		case *ast.FuncDecl:
+//			{
+//				func1 := decl1.(*ast.FuncDecl)
+//				body := func1.Body
+//				if body == nil {
+//					continue
+//				}
+//				for _, list1 := range body.List {
+//					switch list1.(type) {
+//					case *ast.GoStmt:
+//						{
+//							GoStmt1 := list1.(*ast.GoStmt)
+//							go_package_name, go_package_import, go_func_name := FindGoValues(AstFile, GoStmt1)
+//							GoImport1 := GoImport{}
+//							GoImport1.Go_package_name = go_package_name
+//							GoImport1.Go_package_import = go_package_import
+//							GoImport1.Go_func_name = go_func_name
+//							Otvet = append(Otvet, GoImport1)
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
+//
+//	return Otvet
+//}

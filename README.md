@@ -8,8 +8,9 @@ Displayed:
 - directory names
 - package names
 - number of functions and lines in the package
-- package relationship arrows
-- goroutine call arrows (go)
+- go goroutine call arrows (blue)
+- function call arrows (black)
+- package relationship arrows (dashed)
 
 Sample execution (pictures) can be found in the examples directory
 

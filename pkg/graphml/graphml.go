@@ -154,7 +154,7 @@ func CreateElement_Group(ElementGraph0 *etree.Element, GroupCaption string) *etr
 
 	//YBorderStyle
 	ElementYBorderStyle := ElementYGroupNode.CreateElement("y:BorderStyle")
-	ElementYBorderStyle.CreateAttr("color", "#000000")
+	ElementYBorderStyle.CreateAttr("color", "#F5F5F5")
 	ElementYBorderStyle.CreateAttr("type", "dashed")
 	ElementYBorderStyle.CreateAttr("width", "1.0")
 
@@ -344,6 +344,103 @@ func CreateElement_Edge(ElementGraph, ElementFrom, ElementTo *etree.Element, lab
 	ElementYLineStyle := ElementYPolyLineEdge.CreateElement("y:LineStyle")
 	ElementYLineStyle.CreateAttr("color", "#000000")
 	ElementYLineStyle.CreateAttr("type", "line")
+	ElementYLineStyle.CreateAttr("width", "1.0")
+
+	//y:Arrows
+	ElementYArrows := ElementYPolyLineEdge.CreateElement("y:Arrows")
+	ElementYArrows.CreateAttr("source", "none")
+	ElementYArrows.CreateAttr("target", "standard")
+
+	//y:EdgeLabel
+	ElementYEdgeLabel := ElementYPolyLineEdge.CreateElement("y:EdgeLabel")
+	ElementYEdgeLabel.CreateAttr("alignment", "center")
+	ElementYEdgeLabel.CreateAttr("configuration", "AutoFlippingLabel")
+	ElementYEdgeLabel.CreateAttr("distance", "0.0")
+	ElementYEdgeLabel.CreateAttr("fontFamily", "Dialog")
+	ElementYEdgeLabel.CreateAttr("fontSize", strconv.Itoa(FONT_SIZE_EDGE))
+	ElementYEdgeLabel.CreateAttr("fontStyle", "plain")
+	ElementYEdgeLabel.CreateAttr("hasBackgroundColor", "false")
+	ElementYEdgeLabel.CreateAttr("hasLineColor", "false")
+	ElementYEdgeLabel.CreateAttr("height", "17.96875")
+	ElementYEdgeLabel.CreateAttr("horizontalTextPosition", "center")
+	ElementYEdgeLabel.CreateAttr("iconTextGap", "4")
+	ElementYEdgeLabel.CreateAttr("modelName", "centered")
+	ElementYEdgeLabel.CreateAttr("modelPosition", "head")
+	ElementYEdgeLabel.CreateAttr("preferredPlacement", "anywhere")
+	ElementYEdgeLabel.CreateAttr("ratio", "0.5")
+	ElementYEdgeLabel.CreateAttr("textColor", "#000000")
+	ElementYEdgeLabel.CreateAttr("verticalTextPosition", "bottom")
+	ElementYEdgeLabel.CreateAttr("visible", "true")
+	ElementYEdgeLabel.CreateAttr("width", "41.8")
+	ElementYEdgeLabel.CreateAttr("x", "71.5")
+	ElementYEdgeLabel.CreateAttr("xml:space", "preserve")
+	ElementYEdgeLabel.CreateAttr("y", "0.5")
+	ElementYEdgeLabel.CreateAttr("bottomInset", "0")
+	ElementYEdgeLabel.CreateAttr("leftInset", "0")
+	ElementYEdgeLabel.CreateAttr("rightInset", "0")
+	ElementYEdgeLabel.CreateAttr("topInset", "0")
+	ElementYEdgeLabel.CreateText(label)
+
+	//y:PreferredPlacementDescriptor
+	ElementYPreferredPlacementDescriptor := ElementYEdgeLabel.CreateElement("y:PreferredPlacementDescriptor")
+	ElementYPreferredPlacementDescriptor.CreateAttr("angle", "0.0")
+	ElementYPreferredPlacementDescriptor.CreateAttr("angleOffsetOnRightSide", "0")
+	ElementYPreferredPlacementDescriptor.CreateAttr("angleReference", "absolute")
+	ElementYPreferredPlacementDescriptor.CreateAttr("angleRotationOnRightSide", "co")
+	ElementYPreferredPlacementDescriptor.CreateAttr("distance", "-1.0")
+	ElementYPreferredPlacementDescriptor.CreateAttr("frozen", "true")
+	ElementYPreferredPlacementDescriptor.CreateAttr("placement", "anywhere")
+	ElementYPreferredPlacementDescriptor.CreateAttr("side", "anywhere")
+	ElementYPreferredPlacementDescriptor.CreateAttr("sideReference", "relative_to_edge_flow")
+
+	//y:BendStyle
+	ElementYBendStyle := ElementYPolyLineEdge.CreateElement("y:BendStyle")
+	ElementYBendStyle.CreateAttr("smoothed", "false")
+
+	return ElementEdge
+}
+
+// CreateElement_Edge_dotted - создаёт элемент xgml - стрелка пунктирной линией
+func CreateElement_Edge_dotted(ElementGraph, ElementFrom, ElementTo *etree.Element, label, Description string) *etree.Element {
+
+	//node
+	ElementEdge := ElementGraph.CreateElement("edge")
+	//EdgeId := FindId(ElementGraph, ElementEdge)
+	//EdgeID := EdgeId
+	EdgeID := "e" + strconv.Itoa(ElementEdge.Index())
+	ElementEdge.CreateAttr("id", EdgeID)
+	//Source := "n" + strconv.Itoa(IndexElementFrom) + "::" + "n" + strconv.Itoa(IndexElementTo)
+	IdFrom := FindId(ElementGraph, ElementFrom)
+	IdTo := FindId(ElementGraph, ElementTo)
+	ElementEdge.CreateAttr("source", IdFrom)
+	ElementEdge.CreateAttr("target", IdTo)
+
+	//data
+	ElementData := ElementEdge.CreateElement("data")
+	ElementData.CreateAttr("key", "d8")
+	ElementData.CreateAttr("xml:space", "preserve")
+	//ElementData.CreateText("<![CDATA[descr]]>")
+	//ElementData.CreateElement("![CDATA[descr]]")
+	ElementData.CreateCData(Description)
+
+	//data2
+	ElementData2 := ElementEdge.CreateElement("data")
+	ElementData2.CreateAttr("key", "d9")
+
+	//y:PolyLineEdge
+	ElementYPolyLineEdge := ElementData2.CreateElement("y:PolyLineEdge")
+
+	//y:Path
+	ElementYPath := ElementYPolyLineEdge.CreateElement("y:Path")
+	ElementYPath.CreateAttr("sx", "0.0")
+	ElementYPath.CreateAttr("sy", "0.0")
+	ElementYPath.CreateAttr("tx", "0.0")
+	ElementYPath.CreateAttr("ty", "0.0")
+
+	//y:LineStyle
+	ElementYLineStyle := ElementYPolyLineEdge.CreateElement("y:LineStyle")
+	ElementYLineStyle.CreateAttr("color", "#000000")
+	ElementYLineStyle.CreateAttr("type", "dashed")
 	ElementYLineStyle.CreateAttr("width", "1.0")
 
 	//y:Arrows
