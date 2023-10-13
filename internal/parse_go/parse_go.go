@@ -316,6 +316,7 @@ func FindGoValues(AstFile *ast.File, GoStmt1 *ast.GoStmt) (go_package_name, go_p
 func FindPackageImport_FromName(AstFile *ast.File, go_package_name string) string {
 	Otvet := ""
 
+	//поиск псевдонима импорта
 	for _, import1 := range AstFile.Imports {
 		//если задан псевдоним импорта
 		Name := ""
@@ -328,10 +329,22 @@ func FindPackageImport_FromName(AstFile *ast.File, go_package_name string) strin
 			break
 		}
 
+	}
+
+	//поиск импорта без псевдонима
+	for _, import1 := range AstFile.Imports {
+		//импорт с псевдонимом пропускаем
+		Name := ""
+		iName := import1.Name
+		if iName != nil {
+			Name = iName.String()
+		}
+		if Name != "" {
+			continue
+		}
+
 		//импорт без псевдонима - последнее слово в строке
 		ImportString := micro.Trim(import1.Path.Value)
-		//len1 := len(ImportString)
-		//len2 := len(go_package_name)
 		last_word := FindLastWordImport(ImportString)
 		if last_word == go_package_name {
 			Otvet = import1.Path.Value

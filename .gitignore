@@ -10,3 +10,4 @@
 
 .vscode
 /bin/image_packages
+/packages.graphml
