@@ -4,7 +4,7 @@ import (
 	"github.com/ManyakRus/image_packages/internal/config"
 	"github.com/ManyakRus/image_packages/internal/constants"
 	"github.com/ManyakRus/image_packages/internal/logic"
-	ConfigMain "github.com/ManyakRus/starter/config"
+	ConfigMain "github.com/ManyakRus/starter/config_main"
 	"github.com/ManyakRus/starter/log"
 )
 

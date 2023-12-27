@@ -34,7 +34,6 @@ func FindFoldersTree(dir string, NeedFolders, NeedFiles, NeedDot bool, exclude s
 			return nil
 		}
 
-
 		if info.IsDir() {
 			nodes[p] = &Folder{p, path.Base(p), []*File{}, map[string]*Folder{}}
 		} else {
