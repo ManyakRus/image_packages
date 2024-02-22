@@ -19,7 +19,7 @@ func StartApp() {
 	config.FillSettings()
 	config.FillFlags()
 
-	//http.ListenAndServe(":8080", nil) //удалить
+	//go http.ListenAndServe(":8080", nil) //удалить
 
 	StartAt := time.Now()
 	FileName := config.Settings.FILENAME_GRAPHML
@@ -34,5 +34,6 @@ func StartApp() {
 
 	//go parse_go.ParseDir("") //удалить
 	//go print("1")
+	//micro.Sleep(40000) //удалить
 
 }

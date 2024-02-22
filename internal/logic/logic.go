@@ -318,43 +318,71 @@ func FindLinesCount(FileName string) (int, int) {
 }
 
 func LinesCount_reader(r io.Reader) (int, error) {
-	Otvet := 0
-	var err error
+	defaultSize := 1024
+	defaultEndLine := "\n"
 
-	buf := make([]byte, 8192)
+	Size := defaultSize
+	Sep := defaultEndLine
+
+	buf := make([]byte, Size)
+	var count int
 
 	for {
-		c, err := r.Read(buf)
+		n, err := r.Read(buf)
+		count += bytes.Count(buf[:n], []byte(Sep))
+
 		if err != nil {
-			if err == io.EOF && c == 0 {
-				break
-			} else {
-				return Otvet, err
+			if err == io.EOF {
+				return count, nil
 			}
+			return count, err
 		}
 
-		for _, b := range buf[:c] {
-			if b == '\n' {
-				Otvet++
-			}
-		}
 	}
-
-	if err == io.EOF {
-		err = nil
-	}
-
-	return Otvet, err
 }
 
+//func LinesCount_reader(r io.Reader) (int, error) {
+//	Otvet := 0
+//	var err error
+//
+//	buf := make([]byte, 8192)
+//
+//	for {
+//		c, err := r.Read(buf)
+//		if err != nil {
+//			if err == io.EOF && c == 0 {
+//				break
+//			} else {
+//				return Otvet, err
+//			}
+//		}
+//
+//		for _, b := range buf[:c] {
+//			if b == '\n' {
+//				Otvet++
+//			}
+//		}
+//	}
+//
+//	if err == io.EOF {
+//		err = nil
+//	}
+//
+//	return Otvet, err
+//}
+
 // FindFuncCount - находит количество функций(func) в файле
-func FindFuncCount(bytes *[]byte) int {
+func FindFuncCount(bytes0 *[]byte) int {
 	Otvet := 0
 
-	s := string(*bytes)
-	sFind := "(\n|\t| )func( |\t)"
+	//s := string(*bytes0)
+	//Otvet = strings.Count(s, "\nfunc ")
 
-	Otvet = CountMatches(s, regexp.MustCompile(sFind))
+	//sFind := "(\n|\t| )func( |\t)"
+	//
+	//Otvet = CountMatches(s, regexp.MustCompile(sFind))
+
+	Otvet = bytes.Count(*bytes0, []byte("\nfunc "))
 
 	return Otvet
 }
