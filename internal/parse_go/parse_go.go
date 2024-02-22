@@ -50,23 +50,30 @@ func filter_fn(fi fs.FileInfo) bool {
 	return Otvet
 }
 
+// ParseFile_Cache - кэш пропарсенных файлов, для ускорения
+var ParseFile_Cache = make(map[string]*ast.File)
+
 // ParseFile - парсит файл .go
 func ParseFile(Filename string) (*ast.File, error) {
+	var Otvet *ast.File
+	var err error
+
+	Otvet, isFinded := ParseFile_Cache[Filename]
+	if isFinded == true {
+		return Otvet, err
+	}
 
 	fset := token.NewFileSet() // positions are relative to fset
 
-	AstFIle, err := parser.ParseFile(fset, Filename, nil, parser.AllErrors)
+	Otvet, err = parser.ParseFile(fset, Filename, nil, parser.AllErrors)
 	if err != nil {
 		//fmt.Println(err)
-		return AstFIle, err
+		return Otvet, err
 	}
 
-	//// Print the imports from the AST.
-	//for _, v := range AstFIle.Imports {
-	//	fmt.Println(v)
-	//}
+	ParseFile_Cache[Filename] = Otvet
 
-	return AstFIle, err
+	return Otvet, err
 }
 
 // FindGo - находит массив команд go (горутины)
@@ -146,6 +153,9 @@ func FindGoImport_fromFunc(AstFile *ast.File, SelectorExpr1 *ast.SelectorExpr) G
 	return Otvet
 }
 
+// FindFunctions_Cache - рассчитанный кэш, для ускорения, т.к. 1 файл считаем много раз
+var FindFunctions_Cache = make(map[*ast.File][]GoImport)
+
 // FindFunctions - находит массив команд go (горутины)
 func FindFunctions(AstFile *ast.File) []GoImport {
 	Otvet := make([]GoImport, 0)
@@ -154,89 +164,10 @@ func FindFunctions(AstFile *ast.File) []GoImport {
 		return Otvet
 	}
 
-	//parseFuncNode := func(node1 ast.Node) bool {
-	//	switch node1.(type) {
-	//	case *ast.FuncDecl:
-	//		func1 := node1.(*ast.FuncDecl)
-	//		body := func1.Body
-	//		if body == nil {
-	//			return true
-	//		}
-	//		for _, list1 := range body.List {
-	//			switch list1.(type) {
-	//			case *ast.ExprStmt:
-	//				{
-	//					ExprStmt1 := list1.(*ast.ExprStmt)
-	//					switch ExprStmt1.X.(type) {
-	//					case (*ast.CallExpr):
-	//						CallExpr1 := ExprStmt1.X.(*ast.CallExpr)
-	//						switch CallExpr1.Fun.(type) {
-	//						case *ast.SelectorExpr:
-	//							{
-	//								SelectorExpr1 := CallExpr1.Fun.(*ast.SelectorExpr)
-	//								GoImport1 := FindGoImport_fromFunc(AstFile, SelectorExpr1)
-	//								Otvet = append(Otvet, GoImport1)
-	//								//switch SelectorExpr1.X.(type) {
-	//								//case *ast.Ident:
-	//								//	{
-	//								//		Ident_X := SelectorExpr1.X.(*ast.Ident)
-	//								//		Ident_Sel := SelectorExpr1.Sel
-	//								//
-	//								//		go_package_name := Ident_X.Name
-	//								//		go_func_name := Ident_Sel.Name
-	//								//		go_package_import := FindPackageImport_FromName(AstFile, go_package_name)
-	//								//
-	//								//		GoImport1 := GoImport{}
-	//								//		GoImport1.Go_package_name = go_package_name
-	//								//		GoImport1.Go_package_import = go_package_import
-	//								//		GoImport1.Go_func_name = go_func_name
-	//								//		Otvet = append(Otvet, GoImport1)
-	//								//	}
-	//								//}
-	//							}
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	//	return true
-	//}
-
-	//ast.Inspect(AstFile, parseFuncNode)
-
-	//for _, decl1 := range AstFile.Decls {
-	//	switch decl1.(type) {
-	//	case *ast.FuncDecl:
-	//		{
-	//			func1 := decl1.(*ast.FuncDecl)
-	//			body := func1.Body
-	//			if body == nil {
-	//				continue
-	//			}
-	//			for _, list1 := range body.List {
-	//				switch list1.(type) {
-	//				case *ast.ExprStmt:
-	//					{
-	//						ExprStmt1 := list1.(*ast.ExprStmt)
-	//						switch ExprStmt1.X.(type) {
-	//						case (*ast.CallExpr):
-	//							CallExpr1 := ExprStmt1.X.(*ast.CallExpr)
-	//							switch CallExpr1.Fun.(type) {
-	//							case *ast.SelectorExpr:
-	//								{
-	//									SelectorExpr1 := CallExpr1.Fun.(*ast.SelectorExpr)
-	//									GoImport1 := FindGoImport_fromFunc(AstFile, SelectorExpr1)
-	//									Otvet = append(Otvet, GoImport1)
-	//								}
-	//							}
-	//						}
-	//					}
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
+	Otvet, isFinded := FindFunctions_Cache[AstFile]
+	if isFinded == true {
+		return Otvet
+	}
 
 	fset := token.NewFileSet()
 	visitor := &Visitor{fset: fset}
@@ -244,7 +175,10 @@ func FindFunctions(AstFile *ast.File) []GoImport {
 	visitor.AstFile = AstFile
 	ast.Walk(visitor, AstFile)
 
-	return visitor.MassGoImport
+	Otvet = visitor.MassGoImport
+	FindFunctions_Cache[AstFile] = Otvet
+
+	return Otvet
 }
 
 type Visitor struct {

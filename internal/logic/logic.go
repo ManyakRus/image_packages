@@ -15,6 +15,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"time"
 )
 
 // MapPackagesElements - связь Пакета golang / Элемент файла .graphml
@@ -38,17 +39,24 @@ func StartFillAll(FileName string) bool {
 
 	DocXML, ElementGraph := graphml.CreateDocument()
 
+	var StartAt time.Time
 	//заполним каталоги и пакеты
-	log.Info("Start fill groups")
+	StartAt = time.Now()
+	//log.Info("Start fill groups")
 	FillFolder(ElementGraph, nil, FolderRoot)
+	log.Info("FillFolder() Time passed: ", time.Since(StartAt))
 
 	//заполним связи
-	log.Info("Start fill links")
+	StartAt = time.Now()
+	//log.Info("Start fill links")
 	FillLinks(ElementGraph)
+	log.Info("FillLinks() Time passed: ", time.Since(StartAt))
 
 	//заполним связи горутин
-	log.Info("Start fill goroutine links")
+	StartAt = time.Now()
+	//log.Info("Start fill goroutine links")
 	FillLinks_goroutine(ElementGraph)
+	log.Info("FillLinks_goroutine() Time passed: ", time.Since(StartAt))
 
 	if len(MapPackagesElements) > 0 {
 		Otvet = true
@@ -124,9 +132,18 @@ func FillLinks_goroutine(ElementGraph *etree.Element) {
 	}
 }
 
+// FindModuleFuncCallCount_Cache - кэш количества вызовов функций, для ускорения
+var FindModuleFuncCallCount_Cache = make(map[string]int, 0)
+
 // FindModuleFuncCallCount - находит количество вызовов функций нужного модуля
 func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
 	Otvet := 0
+
+	sID_Packages_from_to := PackageFrom.ID + "_" + PackageTo.ID
+	Ovvet, isFinded := FindModuleFuncCallCount_Cache[sID_Packages_from_to]
+	if isFinded == true {
+		return Ovvet
+	}
 
 	PackageTo_ID := PackageTo.ID
 
@@ -159,6 +176,8 @@ func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
 		}
 
 	}
+
+	FindModuleFuncCallCount_Cache[sID_Packages_from_to] = Otvet
 
 	return Otvet
 }
@@ -255,10 +274,27 @@ func FindLinesCount_package(Package1 *packages.Package) (int, int) {
 	return LinesCount, FuncCount
 }
 
+// CountLinesFunctions - количество строк и количество функций
+type CountLinesFunctions struct {
+	LinesCount int
+	FuncCount  int
+}
+
+// FindLinesCount_Cache - кэш рассчитанных количество строк и количество функций
+var FindLinesCount_Cache = make(map[string]CountLinesFunctions)
+
+// FindLinesCount - возвращает количество строк и количество функций в файле
 func FindLinesCount(FileName string) (int, int) {
 	LinesCount := 0
 	FuncCount := 0
 
+	//
+	CountLinesFunctions1, isFinded := FindLinesCount_Cache[FileName]
+	if isFinded == true {
+		return CountLinesFunctions1.LinesCount, CountLinesFunctions1.FuncCount
+	}
+
+	//
 	bytes1, err := os.ReadFile(FileName)
 	if err != nil {
 		log.Fatal(err)
@@ -271,6 +307,12 @@ func FindLinesCount(FileName string) (int, int) {
 	}
 
 	FuncCount = FindFuncCount(&bytes1)
+
+	//
+	FindLinesCount_Cache[FileName] = CountLinesFunctions{
+		LinesCount: LinesCount,
+		FuncCount:  FuncCount,
+	}
 
 	return LinesCount, FuncCount
 }
