@@ -17,6 +17,12 @@ type GoImport struct {
 	Go_func_name      string //имя вызываемой функции
 }
 
+// FindFunctions_Cache - рассчитанный кэш, для ускорения, т.к. 1 файл считаем много раз
+var FindFunctions_Cache = make(map[*ast.File][]GoImport)
+
+// ParseFile_Cache - кэш пропарсенных файлов, для ускорения
+var ParseFile_Cache = make(map[string]*ast.File)
+
 // ParseDir - парсит все файлы .go, кроме тсетов
 func ParseDir(Dir string) (map[string]*ast.Package, error) {
 
@@ -49,9 +55,6 @@ func filter_fn(fi fs.FileInfo) bool {
 
 	return Otvet
 }
-
-// ParseFile_Cache - кэш пропарсенных файлов, для ускорения
-var ParseFile_Cache = make(map[string]*ast.File)
 
 // ParseFile - парсит файл .go
 func ParseFile(Filename string) (*ast.File, error) {
@@ -152,9 +155,6 @@ func FindGoImport_fromFunc(AstFile *ast.File, SelectorExpr1 *ast.SelectorExpr) G
 
 	return Otvet
 }
-
-// FindFunctions_Cache - рассчитанный кэш, для ускорения, т.к. 1 файл считаем много раз
-var FindFunctions_Cache = make(map[*ast.File][]GoImport)
 
 // FindFunctions - находит массив команд go (горутины)
 func FindFunctions(AstFile *ast.File) []GoImport {
