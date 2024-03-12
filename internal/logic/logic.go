@@ -24,6 +24,19 @@ var MapPackagesElements = make(map[*packages.Package]*etree.Element, 0)
 // MapPackageIDElements - связь ИД Пакета golang / Элемент файла .graphml
 var MapPackageIDElements = make(map[string]*etree.Element, 0)
 
+// CountLinesFunctions - количество строк и количество функций
+type CountLinesFunctions struct {
+	LinesCount int
+	FuncCount  int
+}
+
+// FindLinesCount_Cache - кэш рассчитанных количество строк и количество функций
+var FindLinesCount_Cache = make(map[string]CountLinesFunctions)
+
+// FindModuleFuncCallCount_Cache - кэш количества вызовов функций, для ускорения
+var FindModuleFuncCallCount_Cache = make(map[string]int, 0)
+
+// StartFillAll - Старт работы приложения
 func StartFillAll(FileName string) bool {
 	Otvet := false
 
@@ -131,9 +144,6 @@ func FillLinks_goroutine(ElementGraph *etree.Element) {
 		}
 	}
 }
-
-// FindModuleFuncCallCount_Cache - кэш количества вызовов функций, для ускорения
-var FindModuleFuncCallCount_Cache = make(map[string]int, 0)
 
 // FindModuleFuncCallCount - находит количество вызовов функций нужного модуля
 func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
@@ -274,15 +284,6 @@ func FindLinesCount_package(Package1 *packages.Package) (int, int) {
 	return LinesCount, FuncCount
 }
 
-// CountLinesFunctions - количество строк и количество функций
-type CountLinesFunctions struct {
-	LinesCount int
-	FuncCount  int
-}
-
-// FindLinesCount_Cache - кэш рассчитанных количество строк и количество функций
-var FindLinesCount_Cache = make(map[string]CountLinesFunctions)
-
 // FindLinesCount - возвращает количество строк и количество функций в файле
 func FindLinesCount(FileName string) (int, int) {
 	LinesCount := 0
@@ -317,6 +318,7 @@ func FindLinesCount(FileName string) (int, int) {
 	return LinesCount, FuncCount
 }
 
+// LinesCount_reader - возвращает количество строк в файле
 func LinesCount_reader(r io.Reader) (int, error) {
 	defaultSize := 1024
 	defaultEndLine := "\n"

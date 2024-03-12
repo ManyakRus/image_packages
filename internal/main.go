@@ -32,8 +32,4 @@ func StartApp() {
 
 	log.Info("Time passed: ", time.Since(StartAt))
 
-	//go parse_go.ParseDir("") //удалить
-	//go print("1")
-	//micro.Sleep(40000) //удалить
-
 }

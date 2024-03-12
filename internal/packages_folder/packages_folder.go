@@ -41,9 +41,6 @@ func FindAllFolders_FromDir(dir string) *folders.Folder {
 
 	FolderRoot := folders.FindFoldersTree(dir, true, false, false, "vendor")
 
-	//FoldersPackage := FoldersPackages{}
-	//FoldersPackage := FillFoldersPackages(FolderRoot, cfg)
-
 	return FolderRoot
 }
 

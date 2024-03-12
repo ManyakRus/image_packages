@@ -61,11 +61,13 @@ func ParseFile(Filename string) (*ast.File, error) {
 	var Otvet *ast.File
 	var err error
 
+	//поищем в кэш
 	Otvet, isFinded := ParseFile_Cache[Filename]
 	if isFinded == true {
 		return Otvet, err
 	}
 
+	//
 	fset := token.NewFileSet() // positions are relative to fset
 
 	Otvet, err = parser.ParseFile(fset, Filename, nil, parser.AllErrors)
@@ -74,6 +76,7 @@ func ParseFile(Filename string) (*ast.File, error) {
 		return Otvet, err
 	}
 
+	//запомним в кэш
 	ParseFile_Cache[Filename] = Otvet
 
 	return Otvet, err
