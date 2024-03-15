@@ -19,11 +19,13 @@ Installation order:
 https://www.yworks.com/products/yed/download
 
 2. Compile this repository
-make build
+>make build
+>
 image_packages file will appear in the bin folder
 
 3. Run the image_packages file with parameters:
-image_packages <your repository directory> <filename.graphml>
+>image_packages <your repository directory> <filename.graphml>
+>
 
 4. Open the resulting .graphml file in the yEd editor
 (all elements will be in the center of the screen first)
