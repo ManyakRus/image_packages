@@ -6,6 +6,9 @@ import (
 	"github.com/ManyakRus/image_packages/internal/logic"
 	ConfigMain "github.com/ManyakRus/starter/config_main"
 	"github.com/ManyakRus/starter/log"
+	//"os"
+	//"runtime/pprof"
+
 	//_ "net/http/pprof" //удалить
 	"time"
 )
@@ -19,7 +22,12 @@ func StartApp() {
 	config.FillSettings()
 	config.FillFlags()
 
-	//go http.ListenAndServe(":8080", nil) //удалить
+	//f, err := os.Create("./cpu.pprof")
+	//if err != nil {
+	//	log.Fatal("could not create memory profile: ", err)
+	//}
+	//pprof.StartCPUProfile(f)
+	//defer pprof.StopCPUProfile()
 
 	StartAt := time.Now()
 	FileName := config.Settings.FILENAME_GRAPHML

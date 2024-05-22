@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 )
 
 type File struct {
@@ -25,13 +26,25 @@ func (f *Folder) String() string {
 }
 
 // FindFoldersTree - возвращает дерево каталогов и файлов, начиная с директории dir
-func FindFoldersTree(dir string, NeedFolders, NeedFiles, NeedDot bool, exclude string) *Folder {
+func FindFoldersTree(dir string, NeedFolders, NeedFiles, NeedDot bool, MassExclude []string) *Folder {
 	dir = path.Clean(dir)
 	var tree *Folder
 	var nodes = map[string]interface{}{}
 	var walkFun filepath.WalkFunc = func(p string, info os.FileInfo, err error) error {
 		if info == nil {
 			return nil
+		}
+
+		// проверка кроме MassExclude
+		if len(MassExclude) > 0 {
+			for _, v := range MassExclude {
+				if info.Name() == v {
+					return nil
+				}
+				if p == v {
+					return nil
+				}
+			}
 		}
 
 		if info.IsDir() {
@@ -41,6 +54,7 @@ func FindFoldersTree(dir string, NeedFolders, NeedFiles, NeedDot bool, exclude s
 		}
 		return nil
 	}
+
 	err := filepath.Walk(dir, walkFun)
 	if err != nil {
 		log.Fatal(err)
@@ -52,27 +66,42 @@ func FindFoldersTree(dir string, NeedFolders, NeedFiles, NeedDot bool, exclude s
 			tree = value.(*Folder)
 			continue
 		} else {
-			parentFolder = nodes[path.Dir(key)].(*Folder)
+			var ok bool
+			parentFolder, ok = nodes[path.Dir(key)].(*Folder)
+			if !ok {
+				continue
+			}
 		}
 
 		// найдём название Папки/Файла
 		var Name string
+		//var FolderName string
 		switch value.(type) {
 		case *File:
 			Name = value.(*File).Name
 		case *Folder:
-			Name = value.(*Folder).Name
+			{
+				Name = value.(*Folder).Name
+				//FolderName = value.(*Folder).FileName
+			}
 		}
 
 		// проверка скрытые файлы с точкой
-		if NeedDot == false && len(Name) > 0 && Name[0:1] == "." {
+		if NeedDot == false && strings.HasPrefix(Name, ".") {
 			continue
 		}
 
-		// проверка кроме exclude
-		if exclude != "" && len(Name) >= len(exclude) && Name[0:len(exclude)] == exclude {
-			continue
-		}
+		//// проверка кроме MassExclude
+		//if len(MassExclude) > 0 {
+		//	for _, v := range MassExclude {
+		//		if Name == v {
+		//			continue
+		//		}
+		//		if FolderName == v {
+		//			continue
+		//		}
+		//	}
+		//}
 
 		//
 		switch v := value.(type) {

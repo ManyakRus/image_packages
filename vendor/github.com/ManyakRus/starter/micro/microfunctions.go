@@ -3,12 +3,16 @@
 package micro
 
 import (
+	"bytes"
 	"context"
+	"encoding/gob"
 	"errors"
 	"fmt"
+	"github.com/google/uuid"
 	"hash/fnv"
 	"reflect"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -801,4 +805,115 @@ func Int64FromString(s string) (int64, error) {
 	Otvet, err = strconv.ParseInt(s, 10, 64)
 
 	return Otvet, err
+}
+
+// FindLastPos - возвращает позицию последнего вхождения
+func FindLastPos(s, TextFind string) int {
+	Otvet := strings.LastIndex(s, TextFind)
+	return Otvet
+}
+
+// StringFloat64_Dimension2 - возвращает строку с 2 знака после запятой
+func StringFloat64_Dimension2(f float64) string {
+	Otvet := fmt.Sprintf("%.2f", f)
+
+	return Otvet
+}
+
+// StringFloat32_Dimension2 - возвращает строку с 2 знака после запятой
+func StringFloat32_Dimension2(f float32) string {
+	Otvet := fmt.Sprintf("%.2f", f)
+
+	return Otvet
+}
+
+// ShowTimePassed - показывает время прошедшее с момента старта
+// запускать:
+// defer micro.ShowTimePassed(time.Now())
+func ShowTimePassed(StartAt time.Time) {
+	fmt.Print("Time passed: ", time.Since(StartAt))
+}
+
+// StructDeepCopy - копирует структуру из src в dist
+// dist - обязательно ссылка &
+func StructDeepCopy(src, dist interface{}) (err error) {
+	buf := bytes.Buffer{}
+	if err = gob.NewEncoder(&buf).Encode(src); err != nil {
+		return
+	}
+	return gob.NewDecoder(&buf).Decode(dist)
+}
+
+// IsEmptyValue - возвращает true если значение по умолчанию (0, пустая строка, пустой слайс)
+func IsEmptyValue(v any) bool {
+	rv := reflect.ValueOf(v)
+	Otvet := !rv.IsValid() || reflect.DeepEqual(rv.Interface(), reflect.Zero(rv.Type()).Interface())
+	return Otvet
+}
+
+// StringIdentifierFromUUID - возвращает строку из UUID
+func StringIdentifierFromUUID() string {
+	Otvet := uuid.New().String()
+	Otvet = strings.ReplaceAll(Otvet, "-", "")
+
+	return Otvet
+}
+
+// IndexSubstringMin - возвращает индекс первого вхождения в строке
+func IndexSubstringMin(s string, MassSubstr ...string) int {
+	Otvet := -1
+
+	for _, v := range MassSubstr {
+		Otvet1 := -1
+		if v != "" {
+			Otvet1 = strings.Index(s, v)
+		}
+		if Otvet1 != -1 && (Otvet1 < Otvet || Otvet == -1) {
+			Otvet = Otvet1
+		}
+	}
+
+	return Otvet
+}
+
+// IndexSubstringMin2 - возвращает индекс первого вхождения в строке
+func IndexSubstringMin2(s string, substr1, substr2 string) int {
+	Otvet := -1
+
+	Otvet1 := -1
+	Otvet2 := -1
+	if substr1 != "" {
+		Otvet1 = strings.Index(s, substr1)
+	}
+	if substr2 != "" {
+		Otvet2 = strings.Index(s, substr2)
+	}
+
+	if Otvet1 != -1 && (Otvet1 < Otvet2 || Otvet2 == -1) {
+		Otvet = Otvet1
+	} else {
+		Otvet = Otvet2
+	}
+
+	return Otvet
+}
+
+// SortMapStringInt_Desc - сортирует map по значению, по убыванию
+func SortMapStringInt_Desc(values map[string]int) []string {
+	type kv struct {
+		Key   string
+		Value int
+	}
+	var ss []kv
+	for k, v := range values {
+		ss = append(ss, kv{k, v})
+	}
+	sort.Slice(ss, func(i, j int) bool {
+		return ss[i].Value > ss[j].Value
+	})
+	ranked := make([]string, len(values))
+	for i, kv := range ss {
+		ranked[i] = kv.Key
+	}
+	return ranked
 }

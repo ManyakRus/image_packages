@@ -42,7 +42,7 @@ func StartFillAll(FileName string) bool {
 
 	FolderRoot := packages_folder.FindAllFolders_FromDir(config.Settings.DIRECTORY_SOURCE)
 	if FolderRoot == nil {
-		log.Error("Error: not found folder: ", FolderRoot)
+		log.Error("Error: not found folder: ", config.Settings.DIRECTORY_SOURCE)
 		return Otvet
 	}
 
@@ -93,6 +93,8 @@ func StartFillAll(FileName string) bool {
 
 // FillLinks - заполняет связи (стрелки) между пакетами
 func FillLinks(ElementGraph *etree.Element) {
+	//defer micro.ShowTimePassed(time.Now())
+
 	for PackageFrom, ElementFrom := range MapPackagesElements {
 		for _, PackageImport := range PackageFrom.Imports {
 			ElementImport, ok := MapPackageIDElements[PackageImport.ID]
@@ -115,6 +117,8 @@ func FillLinks(ElementGraph *etree.Element) {
 
 // FillLinks_goroutine - заполняет связи (стрелки) между пакетами для горутин go, синим цветом
 func FillLinks_goroutine(ElementGraph *etree.Element) {
+	//defer micro.ShowTimePassed(time.Now())
+
 	for PackageFrom, ElementFrom := range MapPackagesElements {
 		for _, Filename1 := range PackageFrom.GoFiles {
 
@@ -192,7 +196,11 @@ func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
 	return Otvet
 }
 
+// FillFolder - рекурсивное заполнение
+// заполняет MapPackagesElements и MapPackageIDElements
 func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folder) {
+
+	//defer micro.ShowTimePassed(time.Now())
 
 	FolderName := Folder.Name
 
