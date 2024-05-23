@@ -9,7 +9,7 @@ import (
 	"github.com/ManyakRus/starter/folders"
 	"github.com/ManyakRus/starter/log"
 	"github.com/beevik/etree"
-	"golang.org/x/tools/go/packages"
+	//"golang.org/x/tools/go/packages"
 	"io"
 	"os"
 	"regexp"
@@ -18,11 +18,11 @@ import (
 	"time"
 )
 
-// MapPackagesElements - связь Пакета golang / Элемент файла .graphml
-var MapPackagesElements = make(map[*packages.Package]*etree.Element, 0)
+// MapPackageFolderElements - связь Пакета golang / Элемент файла .graphml
+var MapPackageFolderElements = make(map[*packages_folder.PackageFolder]*etree.Element, 0)
 
-// MapPackageIDElements - связь ИД Пакета golang / Элемент файла .graphml
-var MapPackageIDElements = make(map[string]*etree.Element, 0)
+// MapPackageFolderIDElements - связь ИД Пакета golang / Элемент файла .graphml
+var MapPackageFolderIDElements = make(map[string]*etree.Element, 0)
 
 // CountLinesFunctions - количество строк и количество функций
 type CountLinesFunctions struct {
@@ -71,7 +71,7 @@ func StartFillAll(FileName string) bool {
 	FillLinks_goroutine(ElementGraph)
 	log.Info("FillLinks_goroutine() Time passed: ", time.Since(StartAt))
 
-	if len(MapPackagesElements) > 0 {
+	if len(MapPackageFolderElements) > 0 {
 		Otvet = true
 	}
 
@@ -95,15 +95,15 @@ func StartFillAll(FileName string) bool {
 func FillLinks(ElementGraph *etree.Element) {
 	//defer micro.ShowTimePassed(time.Now())
 
-	for PackageFrom, ElementFrom := range MapPackagesElements {
-		for _, PackageImport := range PackageFrom.Imports {
-			ElementImport, ok := MapPackageIDElements[PackageImport.ID]
+	for PackageFrom, ElementFrom := range MapPackageFolderElements {
+		for _, Import1 := range PackageFrom.Imports {
+			ElementImport, ok := MapPackageFolderIDElements[Import1.Name]
 			if ok == false {
 				//посторонние импорты
 				continue
 			}
-			descr := PackageFrom.Name + " -> " + PackageImport.Name
-			call_count := FindModuleFuncCallCount(PackageFrom, PackageImport)
+			descr := PackageFrom.Name + " -> " + Import1.Name
+			call_count := FindModuleFuncCallCount(PackageFrom, Import1)
 			if call_count > 0 {
 				//линия
 				graphml.CreateElement_Edge(ElementGraph, ElementFrom, ElementImport, "", descr)
@@ -119,7 +119,7 @@ func FillLinks(ElementGraph *etree.Element) {
 func FillLinks_goroutine(ElementGraph *etree.Element) {
 	//defer micro.ShowTimePassed(time.Now())
 
-	for PackageFrom, ElementFrom := range MapPackagesElements {
+	for PackageFrom, ElementFrom := range MapPackageFolderElements {
 		for _, Filename1 := range PackageFrom.GoFiles {
 
 			AstFile, err := parse_go.ParseFile(Filename1)
@@ -134,7 +134,7 @@ func FillLinks_goroutine(ElementGraph *etree.Element) {
 				Go_package_import := GoImport1.Go_package_import
 				Go_func_name := GoImport1.Go_func_name
 
-				ElementImport, ok := MapPackageIDElements[Go_package_import]
+				ElementImport, ok := MapPackageFolderIDElements[Go_package_import]
 				if ok == false {
 					//посторонние импорты
 					//continue
@@ -150,16 +150,16 @@ func FillLinks_goroutine(ElementGraph *etree.Element) {
 }
 
 // FindModuleFuncCallCount - находит количество вызовов функций нужного модуля
-func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
+func FindModuleFuncCallCount(PackageFrom *packages_folder.PackageFolder, Import1 packages_folder.Import) int {
 	Otvet := 0
 
-	sID_Packages_from_to := PackageFrom.ID + "_" + PackageTo.ID
-	Ovvet, isFinded := FindModuleFuncCallCount_Cache[sID_Packages_from_to]
-	if isFinded == true {
-		return Ovvet
-	}
-
-	PackageTo_ID := PackageTo.ID
+	//sID_Packages_from_to := PackageFrom.Name + "_" + Import1.
+	//Ovvet, isFinded := FindModuleFuncCallCount_Cache[sID_Packages_from_to]
+	//if isFinded == true {
+	//	return Ovvet
+	//}
+	//
+	//PackageTo_ID := Import1.ID
 
 	for _, Filename1 := range PackageFrom.GoFiles {
 
@@ -173,12 +173,12 @@ func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
 		for _, GoImport1 := range MassGoImport {
 			//	//Go_package_name := GoImport1.Go_package_name
 			Go_package_import := GoImport1.Go_package_import
-			if Go_package_import == PackageTo_ID {
+			if Go_package_import == GoImport1.Go_package_name {
 				Otvet = Otvet + 1
 			}
 			//	Go_func_name := GoImport1.Go_func_name
 			//
-			//	ElementImport, ok := MapPackageIDElements[Go_package_import]
+			//	ElementImport, ok := MapPackageFolderIDElements[Go_package_import]
 			//	if ok == false {
 			//		//посторонние импорты
 			//		//continue
@@ -191,30 +191,25 @@ func FindModuleFuncCallCount(PackageFrom, PackageTo *packages.Package) int {
 
 	}
 
-	FindModuleFuncCallCount_Cache[sID_Packages_from_to] = Otvet
+	//FindModuleFuncCallCount_Cache[sID_Packages_from_to] = Otvet
 
 	return Otvet
 }
 
 // FillFolder - рекурсивное заполнение
-// заполняет MapPackagesElements и MapPackageIDElements
+// заполняет MapPackageFolderElements и MapPackageFolderIDElements
 func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folder) {
-
-	//defer micro.ShowTimePassed(time.Now())
 
 	FolderName := Folder.Name
 
-	//ConfigPackages := packages_folder.CreateConfigPackages(Folder.FileName)
 	PackageFolder1 := packages_folder.FindPackageFromFolder(Folder)
 	PackageName := PackageFolder1.Name
-	//PackageNameFull := PackageFolder1.
-	//PackageName := FindFileNameShort(PackageNameFull)
 	if PackageName == "" && len(Folder.Folders) == 0 {
 		return
 	}
 
 	GroupName := FolderName
-	lines_count, func_count := FindLinesCount_package(PackageFolder1.Package)
+	lines_count, func_count := FindLinesCount_package(PackageFolder1)
 	if lines_count > 0 || func_count > 0 {
 		GroupName = GroupName + " ("
 		if func_count > 0 {
@@ -237,9 +232,8 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 	if PackageName != "" {
 		//добавим пакет(package)
 		ElementShape := graphml.CreateElement_Shape(ElementGroup2, PackageName)
-		MapPackagesElements[PackageFolder1.Package] = ElementShape
-		MapPackageIDElements[PackageFolder1.Package.ID] = ElementShape
-		//MapPackagesElements[&PackageFolder1] = ElementShape
+		MapPackageFolderElements[&PackageFolder1] = ElementShape
+		MapPackageFolderIDElements[PackageFolder1.Name] = ElementShape
 	}
 
 	//сортировка
@@ -271,19 +265,19 @@ func FillFolder(ElementGraph, ElementGroup *etree.Element, Folder *folders.Folde
 //	return Otvet
 //}
 
-func FindLinesCount_package(Package1 *packages.Package) (int, int) {
+func FindLinesCount_package(PackageFolder1 packages_folder.PackageFolder) (int, int) {
 	LinesCount := 0
 	FuncCount := 0
 
-	if Package1 == nil {
+	//if PackageFolder1 == nil {
+	//	return 0, 0
+	//}
+
+	if PackageFolder1.GoFiles == nil {
 		return 0, 0
 	}
 
-	if Package1.GoFiles == nil {
-		return 0, 0
-	}
-
-	for _, s := range Package1.GoFiles {
+	for _, s := range PackageFolder1.GoFiles {
 		count, func_count := FindLinesCount(s)
 		LinesCount = LinesCount + count
 		FuncCount = FuncCount + func_count

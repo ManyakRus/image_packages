@@ -120,6 +120,7 @@ func FindGo(AstFile *ast.File) []GoImport {
 	return Otvet
 }
 
+// FindGoImport_fromFunc - находит имя функции и её префикс импорт
 func FindGoImport_fromFunc(AstFile *ast.File, SelectorExpr1 *ast.SelectorExpr) GoImport {
 	Otvet := GoImport{}
 
@@ -225,6 +226,7 @@ func (v *Visitor) Visit(n ast.Node) ast.Visitor {
 //	return Otvet
 //}
 
+// FindGoValues - находит параметры функции: имя пакета, имя испорта, имя функции
 func FindGoValues(AstFile *ast.File, GoStmt1 *ast.GoStmt) (go_package_name, go_package_import, go_func_name string) {
 
 	iFunc1 := GoStmt1.Call.Fun
@@ -250,6 +252,7 @@ func FindGoValues(AstFile *ast.File, GoStmt1 *ast.GoStmt) (go_package_name, go_p
 	return
 }
 
+// FindPackageImport_FromName - находит имя пакета импорта из полного пути URL
 func FindPackageImport_FromName(AstFile *ast.File, go_package_name string) string {
 	Otvet := ""
 
@@ -293,8 +296,24 @@ func FindPackageImport_FromName(AstFile *ast.File, go_package_name string) strin
 	return Otvet
 }
 
-func FindLastWordImport(ImportString string) string {
+// FindImportID_from_URL - находит ID из импорта URL
+func FindImportID_from_URL(URL string) string {
 	Otvet := ""
+	ImportString := micro.Trim(URL)
+	Otvet = FindLastWordImport(ImportString)
+
+	pos1 := strings.Index(Otvet, ".")
+	if pos1 >= 0 {
+		Otvet = Otvet[0:pos1]
+	}
+
+	return Otvet
+}
+
+// FindLastWordImport - находит последнее слово в URL
+func FindLastWordImport(ImportString string) string {
+	Otvet := ImportString
+	Otvet = DeleteQuotes(Otvet)
 
 	pos1 := strings.LastIndex(ImportString, "/")
 	if pos1 < 0 {
@@ -304,11 +323,11 @@ func FindLastWordImport(ImportString string) string {
 		return Otvet
 	}
 	Otvet = ImportString[pos1+1:]
-	Otvet = DeleteQuotes(Otvet)
 
 	return Otvet
 }
 
+// DeleteQuotes - удаляет все кавычки
 func DeleteQuotes(s string) string {
 	Otvet := s
 
