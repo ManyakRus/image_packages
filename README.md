@@ -24,7 +24,7 @@ https://www.yworks.com/products/yed/download
 image_packages file will appear in the bin folder
 
 3. Run the image_packages file with parameters:
->image_packages <your repository directory> <filename.graphml>
+>image_packages <your_repository_directory> <filename.graphml>
 >
 
 4. Open the resulting .graphml file in the yEd editor

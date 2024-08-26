@@ -23,7 +23,7 @@ make build
 в папке bin появится файл image_packages
 
 3. Запустить файл image_packages с параметрами:
-image_packages <your repository directory> <filename.graphml>
+image_packages <your_repository_directory> <filename.graphml>
 (или сделать файл .env
 DIRECTORY_SOURCE=
 FILENAME_XGML=
