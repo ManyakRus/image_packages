@@ -315,14 +315,14 @@ func FindLastWordImport(ImportString string) string {
 	Otvet := ImportString
 	Otvet = DeleteQuotes(Otvet)
 
-	pos1 := strings.LastIndex(ImportString, "/")
+	pos1 := strings.LastIndex(Otvet, "/")
 	if pos1 < 0 {
 		return Otvet
 	}
-	if len(ImportString) < (pos1 + 1 + 1) {
+	if len(Otvet) < (pos1 + 1 + 1) {
 		return Otvet
 	}
-	Otvet = ImportString[pos1+1:]
+	Otvet = Otvet[pos1+1:]
 
 	return Otvet
 }

@@ -173,7 +173,7 @@ func FindModuleFuncCallCount(PackageFrom *packages_folder.PackageFolder, Import1
 		for _, GoImport1 := range MassGoImport {
 			//	//Go_package_name := GoImport1.Go_package_name
 			Go_package_import := GoImport1.Go_package_import
-			if Go_package_import == GoImport1.Go_package_name {
+			if Go_package_import == Import1.URL {
 				Otvet = Otvet + 1
 			}
 			//	Go_func_name := GoImport1.Go_func_name
